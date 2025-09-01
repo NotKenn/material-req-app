@@ -69,4 +69,10 @@ class CustomLogin extends Login
             'password'  => $data['password'],
         ];
     }
+        protected function throwFailureValidationException(): never
+    {
+        throw ValidationException::withMessages([
+            'data.login' => __('filament-panels::auth/pages/login.messages.failed'),
+        ]);
+    }
 }
