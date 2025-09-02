@@ -6,13 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class matRequestItems extends Model
 {
-    protected $fillables = [
+    protected $fillable = [
         //id, kodeRequest(FK), itemName, Qty, Price, total
-        'kodeMR',
+        'mr_id',
         'itemName',
         'Qty',
-        'Price',
-        'total'
+        'satuan'
     ];
     
     public $timestamps = false;
