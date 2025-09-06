@@ -1,0 +1,43 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class PoDetails extends Model
+{
+    public $table = 'po_details';
+
+    protected $fillable = [
+        'companyName',
+        'officeAddress',
+        'contactName',
+        'phone',
+        'po_number',
+        'date',
+        // 'mrsrNumber', //dari po_mr table, bagian mr_id where po_id = @po_id
+        'termOfPayment',
+        'vendorID'
+    ];
+
+    public $timestamps = false;
+
+    public function vendor()
+    {
+        return $this->belongsTo(vendor::class, 'id');
+    }
+    public function matRequests()
+    {
+        return $this->belongsToMany(
+            MatRequest::class, // model Material Request kamu
+            'po_mr',           // nama tabel pivot
+            'po_id',           // FK di pivot ke PO
+            'mr_id'            // FK di pivot ke Material Request
+        );
+    }
+    public function items()
+    {
+        return $this->hasMany(PoItems::class, 'po_id');
+    }
+
+}

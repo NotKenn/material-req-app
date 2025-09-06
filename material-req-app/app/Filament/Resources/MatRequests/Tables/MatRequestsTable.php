@@ -16,13 +16,12 @@ class MatRequestsTable
             ->columns([
                 TextColumn::make('kodeRequest')
                     ->searchable(),
-                TextColumn::make('requester_id')
-                    ->numeric()
+                TextColumn::make('requester.namaPT')
+                    ->label('Requester')
                     ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
                 TextColumn::make('status')
                     ->searchable(),
                 TextColumn::make('po_file')

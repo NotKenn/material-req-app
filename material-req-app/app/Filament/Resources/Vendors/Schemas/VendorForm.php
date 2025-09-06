@@ -11,10 +11,18 @@ class VendorForm
     {
         return $schema
             ->components([
-                TextInput::make('vendorName'),
-                TextInput::make('alamat'),
-                TextInput::make('namaKontak'),
-                TextInput::make('nomorTelepon'),
+                TextInput::make('vendorName')
+                ->label('Nama Vendor')
+                ->required(),
+                TextInput::make('alamat')
+                ->label('Alamat')
+                ->required(),
+                TextInput::make('namaKontak')
+                ->label('Nama Kontak')
+                ->required(),
+                TextInput::make('nomorTelepon')
+                ->label('Nomor Telepon')
+                ->required(),
             ]);
     }
 }

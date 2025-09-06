@@ -11,16 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('mr_table', function (Blueprint $table) {
+        Schema::create('po_details', function (Blueprint $table) {
             $table->id();
-            $table->string('kodeRequest');
-            $table->foreignId('requester_id')
-                  ->nullable()
-                  ->constrained('requesters')
-                  ->nullOnDelete();
-            $table->dateTime('created_at')->useCurrent();
-            $table->string('status');
-            $table->string('po_file');
+            $table->string('companyName');
+            $table->string('officeAddress');
+            $table->string('contactName');
+            $table->string('phone');
+            $table->string('po_number');
+            $table->date('date');
+            $table->string('termOfPayment');
+            $table->string('vendorID');
         });
     }
 

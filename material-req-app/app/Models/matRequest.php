@@ -18,4 +18,28 @@ class matRequest extends Model
     ];
     
     public $timestamps = false;
+
+    public function mrItems()
+    {
+        return $this->hasMany(matRequestItems::class, 'mr_id');
+    }
+
+    public function mrDetails()
+    {
+        return $this->hasOne(mrDetails::class, 'mr_ids');
+    }
+    public function requester()
+    {
+        return $this->belongsTo(Requesters::class, 'requester_id');
+    }
+    
+    public function pos()
+    {
+        return $this->belongsToMany(
+            PoDetails::class,
+            'po_mr',
+            'mr_id',
+            'po_id'
+        );
+    }
 }

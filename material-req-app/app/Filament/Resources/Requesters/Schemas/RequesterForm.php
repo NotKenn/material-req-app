@@ -11,10 +11,18 @@ class RequesterForm
     {
         return $schema
             ->components([
-                TextInput::make('namaPT')->label('Nama PT'),
-                TextInput::make('alamatPT')->label('Alamat PT'),
-                TextInput::make('namaKontakPT')->label('Nama Kontak PT'),
-                TextInput::make('noTelpKontakPT')->label('No. Telp Kontak PT'),
+                TextInput::make('namaPT')
+                ->label('Nama PT')
+                ->required(),
+                TextInput::make('alamatPT')
+                ->label('Alamat PT')
+                ->required(),
+                TextInput::make('namaKontakPT')
+                ->label('Nama Kontak PT')
+                ->required(),
+                TextInput::make('noTelpKontakPT')
+                ->label('No. Telp Kontak PT')
+                ->required(),
             ]);
     }
 }

@@ -14,10 +14,18 @@ class RequestersTable
     {
         return $table
             ->columns([
-                TextColumn::make('namaPT')->label('Nama PT'),
-                TextColumn::make('alamatPT')->label('Alamat PT'),
-                TextColumn::make('namaKontakPT')->label('Nama Kontak PT'),
-                TextColumn::make('noTelpKontakPT')->label('No. Telp Kontak PT'),
+                TextColumn::make('namaPT')
+                ->label('Nama PT')
+                ->searchable(),
+                TextColumn::make('alamatPT')
+                ->label('Alamat PT')
+                ->searchable(),
+                TextColumn::make('namaKontakPT')
+                ->label('Nama Kontak PT')
+                ->searchable(),
+                TextColumn::make('noTelpKontakPT')
+                ->label('No. Telp Kontak PT')
+                ->searchable(),
             ])
             ->filters([
                 //

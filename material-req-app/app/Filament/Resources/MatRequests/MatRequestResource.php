@@ -6,10 +6,13 @@ use App\Filament\Resources\MatRequests\Pages\CreateMatRequest;
 use App\Filament\Resources\MatRequests\Pages\EditMatRequest;
 use App\Filament\Resources\MatRequests\Pages\ListMatRequests;
 use App\Filament\Resources\MatRequests\Schemas\MatRequestForm;
+use App\Filament\Resources\MatRequests\Schemas\MRDetailsForm;
+use App\Filament\Resources\MatRequests\Schemas\MRItemsForm;
 use App\Filament\Resources\MatRequests\Tables\MatRequestsTable;
 use App\Models\matRequest;
 use BackedEnum;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
@@ -24,7 +27,15 @@ class MatRequestResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return MatRequestForm::configure($schema);
+        return $schema->components(array_merge(
+            MatRequestForm::configure($schema)->getComponents(),
+            MRItemsForm::configure($schema)->getComponents(),
+            [
+            Section::make('')
+            ->schema(MRDetailsForm::configure($schema)->getComponents())
+            ->columnSpanFull(),
+            ]
+        ));
     }
 
     public static function table(Table $table): Table

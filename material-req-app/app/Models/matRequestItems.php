@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class matRequestItems extends Model
 {
+    public $table = 'mr_items';
+
     protected $fillable = [
         //id, kodeRequest(FK), itemName, Qty, Price, total
         'mr_id',
