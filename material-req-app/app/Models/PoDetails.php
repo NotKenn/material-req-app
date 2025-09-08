@@ -24,7 +24,7 @@ class PoDetails extends Model
 
     public function vendor()
     {
-        return $this->belongsTo(vendor::class, 'id');
+        return $this->belongsTo(vendor::class, 'vendorID', 'id');
     }
     public function matRequests()
     {

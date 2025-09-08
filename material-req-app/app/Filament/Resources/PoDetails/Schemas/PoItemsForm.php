@@ -2,7 +2,7 @@
 
 namespace App\Filament\Schemas;
 
-use App\Models\matRequestItems;
+use App\Models\MatRequestItems;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select; 
@@ -15,6 +15,9 @@ class PoItemsForm
     public static function configure(Schema $schema): Schema
     {
         return $schema->components([
+            // ===============================
+            // MATERIAL REQUEST SECTION
+            // ===============================
             Section::make('Material Requests')
                 ->schema([
                     Select::make('matRequests')
@@ -22,10 +25,12 @@ class PoItemsForm
                         ->multiple()
                         ->relationship('matRequests', 'kodeRequest')
                         ->searchable()
-                        ->reactive()
                         ->preload()
+                        ->reactive()
+                        ->dehydrated(true) // ✅ wajib biar ikut submit
                         ->afterStateHydrated(function ($state, $set, $get, $record) {
                             if ($record?->id) {
+                                // set pilihan MR waktu edit
                                 $set('matRequests', $record->matRequests->pluck('id')->toArray());
                             }
                         })
@@ -38,17 +43,24 @@ class PoItemsForm
                             $currentMR = $record?->matRequests->pluck('id')->sort()->values()->toArray() ?? [];
                             $newMR     = collect($state)->sort()->values()->toArray();
 
+                            // ✅ kalau MR sama → jangan regenerate items, biar harga & discount user aman
                             if ($currentMR === $newMR) return;
 
-                            // Hanya ambil sampai unit
-                            $items = matRequestItems::whereIn('mr_id', $state)->get()->map(function ($item) {
-                                return [
-                                    'mr_item_id' => $item->id,
-                                    'itemName'   => $item->itemName ?? '',
-                                    'qty'        => $item->Qty ?? 0,
-                                    'unit'       => $item->satuan ?? $item->uom ?? '',
-                                ];
-                            })->toArray();
+                            $items = MatRequestItems::whereIn('mr_id', $state)
+                                ->get()
+                                ->map(function ($item) {
+                                    return [
+                                        'mr_item_id' => $item->id,
+                                        'itemName'   => $item->itemName ?? '',
+                                        'qty'        => $item->Qty ?? 0,
+                                        'unit'       => $item->satuan ?? $item->uom ?? '',
+                                        'price'      => null,
+                                        'amount'     => null,
+                                        'subtotal'   => null,
+                                        'discount'   => '0',
+                                        'total'      => null,
+                                    ];
+                                })->toArray();
 
                             $set('items', $items);
                         }),
@@ -56,12 +68,14 @@ class PoItemsForm
                 ->columns(1)
                 ->columnSpanFull(),
 
+            // ===============================
+            // PURCHASE ORDER ITEMS SECTION
+            // ===============================
             Section::make('Purchase Order Items')
                 ->schema([
                     Repeater::make('items')
                         ->relationship('items')
-                        ->afterStateHydrated(function ($state, $set) {
-                        })
+                        ->dehydrated(true) // ✅ biar ikut ke DB
                         ->schema([
                             Hidden::make('mr_item_id'),
 
@@ -76,6 +90,7 @@ class PoItemsForm
                                 ->dehydrated(),
 
                             TextInput::make('unit')
+                                ->disabled()
                                 ->dehydrated(),
 
                             TextInput::make('price')
@@ -108,16 +123,15 @@ class PoItemsForm
                             TextInput::make('amount')
                                 ->label('Jumlah')
                                 ->numeric()
-                                ->dehydrated(),
+                                ->dehydrated(true),
 
                             TextInput::make('subtotal')
                                 ->numeric()
-                                ->dehydrated(),
+                                ->dehydrated(true),
 
                             TextInput::make('discount')
                                 ->label('Diskon')
                                 ->type('text')
-                                ->default('0')
                                 ->reactive()
                                 ->debounce(500)
                                 ->afterStateUpdated(function ($state, $set, $get) {
@@ -137,7 +151,7 @@ class PoItemsForm
 
                             TextInput::make('total')
                                 ->numeric()
-                                ->dehydrated(),
+                                ->dehydrated(true),
                         ])
                         ->columns(4)
                         ->columnSpanFull(),
