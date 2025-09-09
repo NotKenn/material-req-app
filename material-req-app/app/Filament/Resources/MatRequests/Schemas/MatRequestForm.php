@@ -29,6 +29,20 @@ class MatRequestForm
                     ->label('Requester')
                     ->relationship('requester', 'namaPT')
                     ->default(null)
+                    ->createOptionForm([
+                        TextInput::make('namaPT')
+                        ->label('Nama PT')
+                        ->required(),
+                        TextInput::make('alamatPT')
+                        ->label('Alamat PT')
+                        ->required(),
+                        TextInput::make('namaKontakPT')
+                        ->label('Nama Kontak PT')
+                        ->required(),
+                        TextInput::make('noTelpKontakPT')
+                        ->label('No. Telp Kontak PT')
+                        ->required(),
+                    ])
                     ->required(),
 
                 ToggleButtons::make('status')

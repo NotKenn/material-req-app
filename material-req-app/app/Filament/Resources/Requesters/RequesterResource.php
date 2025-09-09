@@ -13,6 +13,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class RequesterResource extends Resource
 {
@@ -21,6 +22,11 @@ class RequesterResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserGroup;
 
     protected static ?string $recordTitleAttribute = 'Requester';
+        
+    protected static string|UnitEnum|null $navigationGroup = 'Material Request';
+
+    protected static ?int $navigationSort = 2; // biar urutannya jelas
+
 
     public static function form(Schema $schema): Schema
     {

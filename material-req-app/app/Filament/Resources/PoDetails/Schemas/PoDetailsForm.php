@@ -39,6 +39,20 @@ class PoDetailsForm
                             ->label('Nama Vendor')
                             ->relationship('vendor', 'vendorName')
                             ->default(null)
+                            ->createOptionForm([
+                                TextInput::make('vendorName')
+                                ->label('Nama Vendor')
+                                ->required(),
+                                TextInput::make('alamat')
+                                ->label('Alamat')
+                                ->required(),
+                                TextInput::make('namaKontak')
+                                ->label('Nama Kontak')
+                                ->required(),
+                                TextInput::make('nomorTelepon')
+                                ->label('Nomor Telepon')
+                                ->required(),
+                            ])
                             ->required(),
                                 
                         TextInput::make('termOfPayment')

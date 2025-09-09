@@ -16,6 +16,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class MatRequestResource extends Resource
 {
@@ -24,6 +25,10 @@ class MatRequestResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::ClipboardDocumentList;
 
     protected static ?string $recordTitleAttribute = 'Material Request';
+
+    protected static string|UnitEnum|null $navigationGroup = 'Material Request';
+
+    protected static ?int $navigationSort = 2; // biar urutannya jelas
 
     public static function form(Schema $schema): Schema
     {

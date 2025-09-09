@@ -15,16 +15,21 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class PoDetailsResource extends Resource
 {
     protected static ?string $model = PoDetails::class;
-
+    
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedNewspaper;
-
+    
     protected static ?string $recordTitleAttribute = 'Purchasing Orders';
-
+    
     protected static ?string $navigationLabel = 'Purchasing Orders';
+    
+    protected static string|UnitEnum|null $navigationGroup = 'Purchasing';
+
+    protected static ?int $navigationSort = 1; // biar urutannya jelas
 
     // Penting: biar pivot matRequests disave setelah PO tersimpan
     protected static bool $saveRelationshipsAfterSave = true;
