@@ -31,6 +31,18 @@ class PoDetailsResource extends Resource
 
     protected static ?int $navigationSort = 1; // biar urutannya jelas
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        $user = filament()->auth()->user();
+        return $user && in_array($user->role, ['Admin','Purchasing']);
+    }
+
+    public static function canViewAny(): bool
+    {
+        $user = filament()->auth()->user();
+        return $user && in_array($user->role, ['Admin','Purchasing']);
+    }
+
     // Penting: biar pivot matRequests disave setelah PO tersimpan
     protected static bool $saveRelationshipsAfterSave = true;
 

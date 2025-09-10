@@ -27,6 +27,18 @@ class RequesterResource extends Resource
 
     protected static ?int $navigationSort = 2; // biar urutannya jelas
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        $user = filament()->auth()->user();
+        return $user && in_array($user->role, ['Admin','User']);
+    }
+
+    public static function canViewAny(): bool
+    {
+        $user = filament()->auth()->user();
+        return $user && in_array($user->role, ['Admin','User']);
+    }
+
 
     public static function form(Schema $schema): Schema
     {
