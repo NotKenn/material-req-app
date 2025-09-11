@@ -21,6 +21,7 @@ return new class extends Migration
             $table->dateTime('created_at')->useCurrent();
             $table->string('status');
             $table->string('po_file');
+            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
         });
     }
 

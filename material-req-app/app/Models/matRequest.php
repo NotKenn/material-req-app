@@ -14,7 +14,8 @@ class matRequest extends Model
         'requester_id',
         'created_at',
         'status',
-        'po_file'
+        'po_file',
+        'user_id'
     ];
     
     public $timestamps = false;
