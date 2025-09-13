@@ -8,7 +8,6 @@ use App\Filament\Resources\TrackMRS\Pages\ListTrackMRS;
 use App\Filament\Resources\TrackMRS\Schemas\TrackMRForm;
 use App\Filament\Resources\TrackMRS\Tables\TrackMRSTable;
 use App\Models\matRequest;
-use App\Models\TrackMR;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -24,6 +23,16 @@ class TrackMRResource extends Resource
     protected static ?string $recordTitleAttribute = 'Track MR';
 
     protected static ?string $navigationLabel = 'Track/Acc Requests';
+
+    public static function getPluralLabel(): string
+    {
+        return 'Track/Acc Requests';
+    }
+
+    public static function getLabel(): string
+    {
+        return 'Track/Acc Requests';
+    }
 
     public static function form(Schema $schema): Schema
     {

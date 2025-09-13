@@ -63,10 +63,16 @@ class MatRequestForm
                     ])
                     ->inline()
                     ->columnSpanFull()
+                    ->hidden(fn () => filament()->auth()->user()->role === 'User')
+                    ->disabled(fn () => filament()->auth()->user()->role === 'User')
                     ->default('New'),
 
                 FileUpload::make('po_file') //kerjaan PO nanti, ini kasih kesana di form khusus mr approved or some shit
                     ->label('PO File')
+                    ->disk('public')
+                    ->hidden(fn () => filament()->auth()->user()->role === 'User')
+                    ->disabled(fn () => filament()->auth()->user()->role === 'User')
+                    ->directory('po-files')
                     ->default(null),
             ])
             ->columns(1) // Semua field full width

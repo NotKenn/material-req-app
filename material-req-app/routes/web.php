@@ -5,3 +5,40 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+use Filament\Notifications\Notification as FilNotification;
+use App\Models\User;
+use Illuminate\Notifications\AnonymousNotifiable;
+use Illuminate\Support\Facades\Notification as LaravelNotification;
+use Illuminate\Notifications\Notifiable;
+use Filament\Notifications\Notification;
+
+// Route::get('/test-filament-notif', function () {
+//     $recipient = User::find(2);
+//         Notification::make()
+//         ->title('Halo dari Filament!')
+//         ->body('Notifikasi ini harusnya masuk ke User dengan ID 2')
+//         ->sendToDatabase($recipient);
+//     });
+
+    // dd(Notification::make()
+    //     ->title('Halo dari Filament!')
+    //     ->body('Notifikasi ini harusnya masuk ke User dengan ID 2')
+    //     ->sendToDatabase($recipient));
+
+    // return 'sent';
+// });
+// Route::get('/test-filament-notif', function () {
+//     $recipient = User::find(3);
+    
+
+//     if (! $recipient) {
+//         return 'User tidak ditemukan';
+//     }
+
+//     Notification::make()
+//         ->title('Halo dari Filament!')
+//         ->body('Notifikasi ini harusnya masuk ke User dengan ID 3')
+//         ->sendToDatabase($recipient);
+
+//     return 'Notif dikirim ke user id 3';
+// });
