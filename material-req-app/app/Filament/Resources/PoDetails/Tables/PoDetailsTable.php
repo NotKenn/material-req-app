@@ -2,9 +2,12 @@
 
 namespace App\Filament\Resources\PoDetails\Tables;
 
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Support\Colors\Color;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -42,6 +45,12 @@ class PoDetailsTable
             ])
             ->recordActions([
                 EditAction::make(),
+                Action::make('exportPdf')
+                ->label('PDF')
+                ->color(Color::Sky)
+                ->icon(Heroicon::OutlinedDocumentArrowDown),
+                //nnti masukin function untuk dompdf export sesuai template, 
+                //nnti juga buat template di views/exports/ gitu
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
