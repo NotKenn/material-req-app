@@ -43,12 +43,14 @@ class TrackMRSTable
 
                     return $query; // biarkan tanpa filter kalau bukan role User
                 })
-                ->default(),
+                ,
             ])
             ->recordActions([
                 EditAction::make()
-                ->visible(fn ($record) => in_array(filament()->auth()->user()?->role, ['Admin', 'Purchasing']) 
-                || $record->user_id === filament()->auth()->id()),
+                ->visible(fn ($record) 
+                => in_array(filament()->auth()->user()?->role, ['Admin', 'Purchasing']) 
+                || $record->user_id === filament()->auth()->id())
+                ->label('Approving'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
