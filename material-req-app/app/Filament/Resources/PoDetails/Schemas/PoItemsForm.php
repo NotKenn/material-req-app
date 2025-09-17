@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Schemas;
+namespace App\Filament\Resources\PoDetails\Schemas;
 
 use App\Models\MatRequestItems;
 use Filament\Forms\Components\Hidden;

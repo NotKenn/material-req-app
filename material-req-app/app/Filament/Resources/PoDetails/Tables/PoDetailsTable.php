@@ -10,6 +10,7 @@ use Filament\Support\Colors\Color;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PoDetailsTable
 {
@@ -48,7 +49,16 @@ class PoDetailsTable
                 Action::make('exportPdf')
                 ->label('PDF')
                 ->color(Color::Sky)
-                ->icon(Heroicon::OutlinedDocumentArrowDown),
+                ->icon(Heroicon::OutlinedDocumentArrowDown)
+                ->action(function ($record) {
+                    $pdf = Pdf::loadView('exports.record', [
+                        'record' => $record,
+                    ])
+                    ->setPaper('a4', 'potrait');
+                    return response()->streamDownload(fn () =>
+                        print($pdf->output()), "record-{$record->id}.pdf"
+                );
+                }),
                 //nnti masukin function untuk dompdf export sesuai template, 
                 //nnti juga buat template di views/exports/ gitu
             ])
