@@ -42,3 +42,24 @@ use Filament\Notifications\Notification;
 
 //     return 'Notif dikirim ke user id 3';
 // });
+
+use app\models\PoDetails;
+use Barryvdh\DomPDF\Facade\Pdf;
+
+
+Route::get('/test-pdf/{record}', function ($id) {
+    $record = PoDetails::findOrFail($id);
+
+    $pdf = Pdf::loadView('exports.record', [
+        'record' => $record,
+    ])->setPaper('a4', 'portrait');
+
+    return response()->stream(
+        fn () => print($pdf->output()),
+        200,
+        [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => "inline; filename=record-{$record->id}.pdf",
+        ]
+    );
+});

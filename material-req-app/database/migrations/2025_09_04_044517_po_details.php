@@ -21,6 +21,9 @@ return new class extends Migration
             $table->date('date');
             $table->string('termOfPayment');
             $table->string('vendorID');
+            $table->string('notes')->nullable();
+            $table->string('isRevised')->nullable();
+            $table->string('gl_disc')->nullable();
         });
     }
 
