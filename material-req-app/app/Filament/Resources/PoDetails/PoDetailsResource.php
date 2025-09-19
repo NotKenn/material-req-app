@@ -7,7 +7,7 @@ use App\Filament\Resources\PoDetails\Pages\EditPoDetails;
 use App\Filament\Resources\PoDetails\Pages\ListPoDetails;
 use App\Filament\Resources\PoDetails\Tables\PoDetailsTable;
 use App\Filament\Resources\PoDetails\Schemas\PoDetailsForm;
-use App\Filament\Schemas\PoItemsForm;
+use App\Filament\Resources\PoDetails\Schemas\PoItemsForm;
 use App\Models\PoDetails;
 use BackedEnum;
 use Filament\Resources\Resource;

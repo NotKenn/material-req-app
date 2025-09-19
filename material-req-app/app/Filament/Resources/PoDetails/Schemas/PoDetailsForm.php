@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\PoDetails\Schemas;
 
+use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -57,6 +58,14 @@ class PoDetailsForm
                                 
                         TextInput::make('termOfPayment')
                             ->required(),
+                        TextInput::make('gl_disc')
+                            ->label('Global Discount'),
+                        Select::make('isRevised')
+                        ->options([
+                            'Yes'   => 'Yes',
+                            'No'    => 'No'
+                        ])
+                        ->label('Revisi'),
                     ])
                     ->columns(2)
                     ->columnSpanFull(),

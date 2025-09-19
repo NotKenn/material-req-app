@@ -17,7 +17,9 @@ class PoDetails extends Model
         'date',
         // 'mrsrNumber', //dari po_mr table, bagian mr_id where po_id = @po_id
         'termOfPayment',
-        'vendorID'
+        'vendorID',
+        'isRevised',
+        'gl_disc'
     ];
 
     public $timestamps = false;

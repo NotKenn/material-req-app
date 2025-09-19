@@ -15,4 +15,10 @@ class CreateMatRequest extends CreateRecord
     {
         return $this->getResource()::getUrl('index');
     }
+    protected function afterCreate(): void
+    {
+        // akses record yang baru dibuat
+        $this->record->user_id = filament()->auth()->user()->id;
+        $this->record->save();
+    }
 }

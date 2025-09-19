@@ -54,7 +54,7 @@ class PoDetailsTable
                     $pdf = Pdf::loadView('exports.record', [
                         'record' => $record,
                     ])
-                    ->setPaper('a4', 'potrait');
+                    ->setPaper('a4');
                     return response()->streamDownload(fn () =>
                         print($pdf->output()), "record-{$record->id}.pdf"
                 );

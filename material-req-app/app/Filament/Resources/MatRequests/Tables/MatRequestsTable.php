@@ -42,8 +42,7 @@ class MatRequestsTable
                 }
 
                     return $query; // biarkan tanpa filter kalau bukan role User
-                })
-                ->default(),
+                }),
             ])
             ->recordActions([
                 EditAction::make(),
