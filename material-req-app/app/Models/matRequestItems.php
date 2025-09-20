@@ -13,7 +13,8 @@ class matRequestItems extends Model
         'mr_id',
         'itemName',
         'Qty',
-        'satuan'
+        'satuan',
+        'notes'
     ];
     
     public $timestamps = false;

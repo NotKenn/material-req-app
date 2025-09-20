@@ -21,53 +21,69 @@ class PoItemsForm
             Section::make('Material Requests')
                 ->schema([
                     Select::make('matRequests')
-                        ->label('Pilih Material Request')
-                        ->multiple()
-                        ->relationship('matRequests', 'kodeRequest')
-                        ->searchable()
-                        ->preload()
-                        ->reactive()
-                        ->dehydrated(true) // ✅ wajib biar ikut submit
-                        ->afterStateHydrated(function ($state, $set, $get, $record) {
-                            if ($record?->id) {
-                                // set pilihan MR waktu edit
-                                $set('matRequests', $record->matRequests->pluck('id')->toArray());
-                            }
-                        })
-                        ->afterStateUpdated(function ($state, $set, $get, $record) {
-                            if (empty($state)) {
-                                $set('items', []);
-                                return;
-                            }
+                    ->label('Pilih Material Request')
+                    ->multiple()
+                    ->relationship('matRequests', 'kodeRequest')
+                    ->searchable()
+                    ->preload()
+                    ->reactive()
+                    ->dehydrated(true) // ✅ wajib biar ikut submit
+                    ->afterStateHydrated(function ($state, $set, $get, $record) {
+                        if ($record?->id) {
+                            // set pilihan MR waktu edit
+                            $set('matRequests', $record->matRequests->pluck('id')->toArray());
+                        }
+                    })
+                    ->afterStateUpdated(function ($state, $set, $get, $record) {
+                        if (empty($state)) {
+                            $set('items', []);
+                            // ✅ reset juga field detail kalau MR kosong
+                            $set('companyName', null);
+                            $set('officeAddress', null);
+                            $set('contactName', null);
+                            $set('phone', null);
+                            return;
+                        }
 
-                            $currentMR = $record?->matRequests->pluck('id')->sort()->values()->toArray() ?? [];
-                            $newMR     = collect($state)->sort()->values()->toArray();
+                        $currentMR = $record?->matRequests->pluck('id')->sort()->values()->toArray() ?? [];
+                        $newMR     = collect($state)->sort()->values()->toArray();
 
-                            // ✅ kalau MR sama → jangan regenerate items, biar harga & discount user aman
-                            if ($currentMR === $newMR) return;
+                        // ✅ kalau MR sama → jangan regenerate items, biar harga & discount user aman
+                        if ($currentMR === $newMR) return;
 
-                            $items = MatRequestItems::whereIn('mr_id', $state)
-                                ->get()
-                                ->map(function ($item) {
-                                    return [
-                                        'mr_item_id' => $item->id,
-                                        'itemName'   => $item->itemName ?? '',
-                                        'qty'        => $item->Qty ?? 0,
-                                        'unit'       => $item->satuan ?? $item->uom ?? '',
-                                        'price'      => null,
-                                        'amount'     => null,
-                                        'subtotal'   => null,
-                                        'discount'   => '0',
-                                        'total'      => null,
-                                    ];
-                                })->toArray();
+                        // ✅ ambil items dari MR
+                        $items = MatRequestItems::whereIn('mr_id', $state)
+                            ->get()
+                            ->map(function ($item) {
+                                return [
+                                    'mr_item_id' => $item->id,
+                                    'itemName'   => $item->itemName ?? '',
+                                    'qty'        => $item->Qty ?? 0,
+                                    'unit'       => $item->satuan ?? $item->uom ?? '',
+                                    'price'      => null,
+                                    'amount'     => null,
+                                    'subtotal'   => null,
+                                    'discount'   => '0',
+                                    'total'      => null,
+                                ];
+                            })->toArray();
 
-                            $set('items', $items);
-                        }),
+                        $set('items', $items);
+
+                        // ✅ set field detail (ambil MR pertama sebagai sumber)
+                        if ($mr = \App\Models\MatRequest::with('requester')->find($state[0])) {
+                            // ambil langsung dari MR
+                            $set('officeAddress', $mr->address ?? '');
+                            $set('contactName',  $mr->name ?? '');
+                            $set('phone',        $mr->phone ?? '');
+
+                            // ambil company dari relasi requester
+                            $set('companyName', $mr->requester->namaPT ?? '');
+                        }
+                    }),
                 ])
                 ->columns(1)
                 ->columnSpanFull(),
-
             // ===============================
             // PURCHASE ORDER ITEMS SECTION
             // ===============================

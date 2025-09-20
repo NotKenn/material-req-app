@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\PoDetails\Schemas;
 
+use App\Models\matRequest;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
@@ -18,15 +19,23 @@ class PoDetailsForm
                 Section::make('Purchase Order Details')
                     ->schema([
                         TextInput::make('companyName')
+                            ->disabled()
+                            ->dehydrated(true)
                             ->required(),
 
                         TextInput::make('officeAddress')
+                            ->disabled()
+                            ->dehydrated(true)
                             ->required(),
 
                         TextInput::make('contactName')
+                            ->disabled()
+                            ->dehydrated(true)
                             ->required(),
 
                         TextInput::make('phone')
+                            ->disabled()
+                            ->dehydrated(true)
                             ->tel()
                             ->required(),
 

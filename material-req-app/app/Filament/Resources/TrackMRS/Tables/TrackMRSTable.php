@@ -48,8 +48,11 @@ class TrackMRSTable
             ->recordActions([
                 EditAction::make()
                 ->visible(fn ($record) 
-                => in_array(filament()->auth()->user()?->role, ['Admin', 'Purchasing']) 
-                || $record->user_id === filament()->auth()->id())
+                => in_array(filament()->auth()->user()?->role, ['Admin', 'Purchasing'])
+                )
+                // || $record->user_id === filament()->auth()->id() //yg ini pindahin ke atas
+                                                                    //disamping kiri tutup kurung yg melayang 
+                                                                    //ni klo mau dipake
                 ->label('Approving'),
             ])
             ->toolbarActions([

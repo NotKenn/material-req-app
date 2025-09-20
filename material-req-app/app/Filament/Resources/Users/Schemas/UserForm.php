@@ -35,6 +35,7 @@ class UserForm
                         'Purchasing' => 'Purchasing',
                         'Admin'      => 'Admin'
                     ])
+                    ->required(),
             ]);
     }
 }

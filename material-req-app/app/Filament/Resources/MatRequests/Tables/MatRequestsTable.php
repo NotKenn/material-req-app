@@ -25,11 +25,11 @@ class MatRequestsTable
                     ->sortable(),
                 TextColumn::make('status')
                     ->searchable(),
-                TextColumn::make('po_file')
-                    ->url(fn ($record) => $record->po_file ? asset('storage/' . $record->po_file) : null, shouldOpenInNewTab: true)
-                    ->formatStateUsing(fn ($state) => $state ? 'Download' : '-') 
-                    ->color('info')
-                    ->searchable(),
+                // TextColumn::make('po_file')
+                //     ->url(fn ($record) => $record->po_file ? asset('storage/' . $record->po_file) : null, shouldOpenInNewTab: true)
+                //     ->formatStateUsing(fn ($state) => $state ? 'Download' : '-') 
+                //     ->color('info')
+                //     ->searchable(),
             ])
             ->filters([
                 Filter::make('myRequests')

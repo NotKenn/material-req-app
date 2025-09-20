@@ -19,14 +19,17 @@ class MRItemsForm
                 ->relationship('mrItems')
                         ->label('Items')
                         ->schema([
-                            // Nama item full width
-                            TextInput::make('itemName')
-                                ->label('Item Name')
-                                ->required(),
+                            // Nama item full width ke sini klo mau
+                            
 
                             // Row bawah: Qty + Unit
-                            Grid::make(2)
+                            Grid::make(4)
                                 ->schema([
+                                    TextInput::make('itemName')
+                                        ->label('Item Name')
+                                        ->required(),
+                                    TextInput::make('notes')
+                                        ->label('Keterangan'),
                                     TextInput::make('Qty')
                                         ->label('Quantity')
                                         ->required(),

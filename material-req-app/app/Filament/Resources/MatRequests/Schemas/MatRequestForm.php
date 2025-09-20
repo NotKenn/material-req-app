@@ -74,6 +74,15 @@ class MatRequestForm
                     ->disabled(fn () => filament()->auth()->user()->role === 'User')
                     ->directory('po-files')
                     ->default(null),
+                TextInput::make('address')
+                    ->label('Office Address')
+                    ->required(),
+                TextInput::make('name')
+                    ->label('Contact Name')
+                    ->required(),
+                TextInput::make('phone')
+                    ->label('Phone')
+                    ->required(),
             ])
             ->columns(1) // Semua field full width
             ->extraAttributes([

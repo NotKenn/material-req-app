@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('itemName');
             $table->string('Qty');
             $table->string('satuan');
+            $table->string('notes');
         });
     }
 

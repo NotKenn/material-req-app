@@ -46,10 +46,10 @@ class MatRequestResource extends Resource
     {
         return $schema->components(array_merge(
             MatRequestForm::configure($schema)->getComponents(),
-            MRItemsForm::configure($schema)->getComponents(),
+            MRDetailsForm::configure($schema)->getComponents(),
             [
             Section::make('')
-            ->schema(MRDetailsForm::configure($schema)->getComponents())
+            ->schema(MRItemsForm::configure($schema)->getComponents())
             ->columnSpanFull(),
             ]
         ));
