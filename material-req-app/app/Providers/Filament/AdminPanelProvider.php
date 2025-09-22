@@ -33,6 +33,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('app')
+            ->brandName('MRP')
             ->databaseNotifications()
             ->databaseNotificationsPolling('10s')
             ->login(CustomLogin::class)

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\matRequest;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -46,13 +47,32 @@ use Filament\Notifications\Notification;
 use app\models\PoDetails;
 use Barryvdh\DomPDF\Facade\Pdf;
 
+// Tes PO
+// Route::get('/test-pdf/{record}', function ($id) {
+//     $record = PoDetails::findOrFail($id);
+
+//     $pdf = Pdf::loadView('exports.record', [
+//         'record' => $record,
+//     ])->setPaper('a4');
+
+//     return response()->stream(
+//         fn () => print($pdf->output()),
+//         200,
+//         [
+//             'Content-Type' => 'application/pdf',
+//             'Content-Disposition' => "inline; filename=record-{$record->id}.pdf",
+//         ]
+//     );
+// });
+
+// Tes MR
 
 Route::get('/test-pdf/{record}', function ($id) {
-    $record = PoDetails::findOrFail($id);
+    $record = matRequest::findOrFail($id);
 
-    $pdf = Pdf::loadView('exports.record', [
+    $pdf = Pdf::loadView('exports.request', [
         'record' => $record,
-    ])->setPaper('a4');
+    ])->setPaper('a4', 'landscape');
 
     return response()->stream(
         fn () => print($pdf->output()),

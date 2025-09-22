@@ -83,6 +83,9 @@ class MatRequestForm
                 TextInput::make('phone')
                     ->label('Phone')
                     ->required(),
+                TextInput::make('departemen')
+                    ->label('Departemen')
+                    ->required(),
             ])
             ->columns(1) // Semua field full width
             ->extraAttributes([

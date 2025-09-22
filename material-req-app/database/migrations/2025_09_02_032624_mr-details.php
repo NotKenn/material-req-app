@@ -18,7 +18,8 @@ return new class extends Migration
             $table->dateTime('tanggalPerlu');
             $table->string('lokasiPengantaran');
             $table->string('lampiran')->nullable();
-            $table->string('notes');
+            $table->string('notes')->nullable();
+            $table->string('departemen')->nullable();
         });
     }
 

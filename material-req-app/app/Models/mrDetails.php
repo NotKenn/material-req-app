@@ -12,7 +12,8 @@ class mrDetails extends Model
         'tanggalPerlu',
         'lokasiPengantaran',
         'lampiran',
-        'notes'
+        'notes',
+        'departemen',
     ];
     
     public $timestamps = false;

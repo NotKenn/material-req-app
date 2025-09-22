@@ -25,7 +25,6 @@ class MRDetailsForm
                     DatePicker::make('tanggal')
                         ->label('Tanggal')
                         ->required(),
-
                     DatePicker::make('tanggalPerlu')
                         ->label('Tanggal Perlu')
                         ->required(),

@@ -2,9 +2,13 @@
 
 namespace App\Filament\Resources\MatRequests\Tables;
 
+use Barryvdh\DomPDF\Facade\Pdf;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Support\Colors\Color;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
@@ -46,6 +50,19 @@ class MatRequestsTable
             ])
             ->recordActions([
                 EditAction::make(),
+                Action::make('exportPdf')
+                ->label('PDF')
+                ->color(Color::Sky)
+                ->icon(Heroicon::OutlinedDocumentArrowDown)
+                ->action(function ($record) {
+                    $pdf = Pdf::loadView('exports.request', [
+                        'record' => $record,
+                    ])
+                    ->setPaper('a4','landscape');
+                    return response()->streamDownload(fn () =>
+                        print($pdf->output()), "MR-{$record->kodeRequest}.pdf"
+                );
+                }),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
