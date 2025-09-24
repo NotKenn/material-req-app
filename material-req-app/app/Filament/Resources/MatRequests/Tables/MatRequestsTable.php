@@ -7,6 +7,7 @@ use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\Builder;
 use Filament\Support\Colors\Color;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
@@ -34,7 +35,8 @@ class MatRequestsTable
                 //     ->formatStateUsing(fn ($state) => $state ? 'Download' : '-') 
                 //     ->color('info')
                 //     ->searchable(),
-            ])
+            ]) 
+            ->defaultSort('created_at', 'desc')
             ->filters([
                 Filter::make('myRequests')
                 ->label('My Requests')
@@ -46,6 +48,18 @@ class MatRequestsTable
                 }
 
                     return $query; // biarkan tanpa filter kalau bukan role User
+                })
+                ->default(function () {
+                $user = filament()->auth()->user();
+
+                // Kalau User → aktif by default
+                return $user && $user->role === 'User';
+                })
+                ->visible(function () {
+                    $user = filament()->auth()->user();
+
+                    // Kalau Admin / Purchasing → sembunyikan filternya
+                    return $user && $user->role === 'User';
                 }),
             ])
             ->recordActions([

@@ -19,6 +19,8 @@ return new class extends Migration
                   ->constrained('requesters')
                   ->nullOnDelete();
             $table->dateTime('created_at')->useCurrent();
+            $table->dateTime('updated_at')->useCurrent()->useCurrentOnUpdate()->nullable();
+            $table->unsignedInteger('edit_count')->default(0);
             $table->string('status');
             $table->string('po_file');
             $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();

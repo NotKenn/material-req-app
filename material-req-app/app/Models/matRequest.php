@@ -18,10 +18,19 @@ class matRequest extends Model
         'user_id',
         'address',
         'name',
-        'phone'
+        'phone',
+        'departemen',
+        'edit_count'
     ];
     
     public $timestamps = false;
+
+    protected static function booted()
+    {
+        static::updating(function ($model) {
+            $model->edit_count = $model->edit_count + 1;
+        });
+    }
 
     public function mrItems()
     {

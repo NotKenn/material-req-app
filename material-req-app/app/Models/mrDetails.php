@@ -13,7 +13,7 @@ class mrDetails extends Model
         'lokasiPengantaran',
         'lampiran',
         'notes',
-        'departemen',
+        
     ];
     
     public $timestamps = false;

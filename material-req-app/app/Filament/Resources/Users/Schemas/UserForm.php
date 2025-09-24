@@ -31,9 +31,11 @@ class UserForm
                 Select::make('role')
                     ->label('Role')
                     ->options([
-                        'User' => 'User',
-                        'Purchasing' => 'Purchasing',
-                        'Admin'      => 'Admin'
+                        'User'          => 'User',
+                        'Purchasing'    => 'Purchasing',
+                        'Admin'         => 'Admin',
+                        'MRSupervisor'  => 'MRSupervisor',
+                        'POSupervisor'  => 'POSupervisor'
                     ])
                     ->required(),
             ]);
