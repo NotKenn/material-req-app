@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\MatRequests\Schemas;
 
+use App\Models\lastNumbers;
 use App\Models\mrDetails;
 use App\Models\matRequest;
 use App\Models\requesters;
@@ -23,7 +24,9 @@ class MatRequestForm
             ->schema([
                 TextInput::make('kodeRequest')
                     ->label('Kode Request')
-                    ->required(),
+                    ->default(fn () => lastNumbers::generate('MR'))
+                    ->disabled() // biar user ga ubah manual
+                    ->dehydrated(true),
 
                 Select::make('requester_id')
                     ->label('Requester')

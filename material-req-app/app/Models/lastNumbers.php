@@ -12,7 +12,7 @@ class lastNumbers extends Model
     protected $fillable = [
         // id, kodeRequest, status, po_file, created_at
         'type',
-        'lastNumber',
+        'lastNumbers',
     ];
     
     public static function generate(string $type): int
@@ -20,13 +20,13 @@ class lastNumbers extends Model
         return DB::transaction(function () use ($type) {
             $record = static::lockForUpdate()->firstOrCreate(
                 ['type' => $type],
-                ['last_number' => 0]
+                ['lastNumbers' => 0]
             );
 
-            $record->last_number++;
+            $record->lastNumbers++;
             $record->save();
 
-            return $record->last_number;
+            return $record->lastNumbers;
         });
     }
 }
