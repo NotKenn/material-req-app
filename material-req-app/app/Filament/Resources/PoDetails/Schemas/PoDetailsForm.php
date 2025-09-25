@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\PoDetails\Schemas;
 
+use App\Models\lastNumbers;
 use App\Models\matRequest;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;
@@ -43,7 +44,10 @@ class PoDetailsForm
                             ->required(),
 
                         TextInput::make('po_number')
-                            ->required(),
+                            ->label('Nomor PO')
+                            ->default(fn () => \App\Models\LastNumbers::peek('PO'))
+                            ->disabled()
+                            ->dehydrated(true),
 
                         Select::make('vendorID')
                             ->label('Nama Vendor')

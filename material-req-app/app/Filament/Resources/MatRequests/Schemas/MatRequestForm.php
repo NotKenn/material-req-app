@@ -24,7 +24,7 @@ class MatRequestForm
             ->schema([
                 TextInput::make('kodeRequest')
                     ->label('Kode Request')
-                    ->default(fn () => lastNumbers::generate('MR'))
+                    ->default(fn () => \App\Models\LastNumbers::peek('MR'))
                     ->disabled() // biar user ga ubah manual
                     ->dehydrated(true),
 
@@ -66,15 +66,15 @@ class MatRequestForm
                     ])
                     ->inline()
                     ->columnSpanFull()
-                    ->hidden(fn () => filament()->auth()->user()->role === 'User')
-                    ->disabled(fn () => filament()->auth()->user()->role === 'User')
+                    ->hidden(fn () => in_array(filament()->auth()->user()->role, ['User', 'MRSupervisor']))
+                    ->disabled(fn () => in_array(filament()->auth()->user()->role, ['User', 'MRSupervisor']))
                     ->default('New'),
 
                 FileUpload::make('po_file') //kerjaan PO nanti, ini kasih kesana di form khusus mr approved or some shit
                     ->label('PO File')
                     ->disk('public')
-                    ->hidden(fn () => filament()->auth()->user()->role === 'User')
-                    ->disabled(fn () => filament()->auth()->user()->role === 'User')
+                    ->hidden(fn () => in_array(filament()->auth()->user()->role, ['User', 'MRSupervisor']))
+                    ->disabled(fn () => in_array(filament()->auth()->user()->role, ['User', 'MRSupervisor']))
                     ->directory('po-files')
                     ->default(null),
                 TextInput::make('address')

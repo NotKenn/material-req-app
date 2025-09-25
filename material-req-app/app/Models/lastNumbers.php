@@ -29,4 +29,13 @@ class lastNumbers extends Model
             return $record->lastNumbers;
         });
     }
+    public static function peek(string $type): int
+    {
+        $record = static::firstOrCreate(
+            ['type' => $type],
+            ['lastNumbers' => 0]
+        );
+
+        return $record->lastNumbers + 1; // cuma lihat next number, tidak save
+    }
 }

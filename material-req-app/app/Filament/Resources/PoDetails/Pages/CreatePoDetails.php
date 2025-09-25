@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\PoDetails\Pages;
 
 use App\Filament\Resources\PoDetails\PoDetailsResource;
+use App\Models\lastNumbers;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreatePoDetails extends CreateRecord
@@ -12,6 +13,12 @@ class CreatePoDetails extends CreateRecord
     protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');
+    }
+    public function mutateFormDataBeforeCreate(array $data): array
+    {
+        $data['po_number'] = lastNumbers::generate('PO');
+
+        return $data;
     }
     
     // protected function afterSave(): void
