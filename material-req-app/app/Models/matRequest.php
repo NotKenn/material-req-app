@@ -32,6 +32,11 @@ class matRequest extends Model
         });
     }
 
+    public function approvals()
+    {
+        return $this->morphMany(approvals::class, 'approvable');
+    }
+
     public function mrItems()
     {
         return $this->hasMany(matRequestItems::class, 'mr_id');

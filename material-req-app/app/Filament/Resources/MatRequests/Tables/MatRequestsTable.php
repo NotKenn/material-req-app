@@ -10,6 +10,7 @@ use Filament\Actions\EditAction;
 use Filament\Forms\Components\Builder;
 use Filament\Support\Colors\Color;
 use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
@@ -30,6 +31,12 @@ class MatRequestsTable
                     ->sortable(),
                 TextColumn::make('status')
                     ->searchable(),
+                BadgeColumn::make('approval_status')
+                    ->colors([
+                        'gray' => 'pending',
+                        'success' => 'approved',
+                        'danger' => 'rejected',
+                    ]),
                 // TextColumn::make('po_file')
                 //     ->url(fn ($record) => $record->po_file ? asset('storage/' . $record->po_file) : null, shouldOpenInNewTab: true)
                 //     ->formatStateUsing(fn ($state) => $state ? 'Download' : '-') 
@@ -63,7 +70,7 @@ class MatRequestsTable
                 }),
             ])
             ->recordActions([
-                EditAction::make(),
+                EditAction::make(), //buat kalau supervisor, kasih approve button
                 Action::make('exportPdf')
                 ->label('PDF')
                 ->color(Color::Sky)

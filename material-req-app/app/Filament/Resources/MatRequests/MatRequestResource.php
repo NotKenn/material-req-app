@@ -5,6 +5,7 @@ namespace App\Filament\Resources\MatRequests;
 use App\Filament\Resources\MatRequests\Pages\CreateMatRequest;
 use App\Filament\Resources\MatRequests\Pages\EditMatRequest;
 use App\Filament\Resources\MatRequests\Pages\ListMatRequests;
+use App\Filament\Resources\MatRequests\RelationManagers\ApprovalsRelationManager;
 use App\Filament\Resources\MatRequests\Schemas\MatRequestForm;
 use App\Filament\Resources\MatRequests\Schemas\MRDetailsForm;
 use App\Filament\Resources\MatRequests\Schemas\MRItemsForm;
@@ -63,7 +64,7 @@ class MatRequestResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            // ApprovalsRelationManager::class,
         ];
     }
 

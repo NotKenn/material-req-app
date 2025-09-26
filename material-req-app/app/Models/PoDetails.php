@@ -28,6 +28,10 @@ class PoDetails extends Model
     {
         return $this->belongsTo(vendor::class, 'vendorID', 'id');
     }
+    public function approvals()
+    {
+        return $this->morphMany(approvals::class, 'approvable');
+    }
     public function matRequests()
     {
         return $this->belongsToMany(
@@ -41,5 +45,6 @@ class PoDetails extends Model
     {
         return $this->hasMany(PoItems::class, 'po_id');
     }
+
 
 }
