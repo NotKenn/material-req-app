@@ -32,6 +32,13 @@ class matRequest extends Model
         });
     }
 
+    public function latestApproval()
+    {
+        return $this->hasOne(approvals::class, 'approvable_id')
+                    ->where('approvable_type', self::class)
+                    ->latestOfMany();
+    }
+
     public function approvals()
     {
         return $this->morphMany(approvals::class, 'approvable');

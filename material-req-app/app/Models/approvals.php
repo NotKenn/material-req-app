@@ -17,6 +17,8 @@ class approvals extends Model
         'notes',
         'approved_at',
     ];
+
+    public $timestamps = false;
     
     public function approvable()
     {
