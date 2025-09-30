@@ -16,6 +16,19 @@ class EditMatRequest extends EditRecord
             DeleteAction::make(),
         ];
     }
+    protected function afterSave(): void
+    {
+        $approval = $this->record->approvals()->latest('approved_at')->first();
+
+        $changes = $this->record->wasChanged();
+
+        if($approval->status === 'Rejected' && $this->record->wasChanged())
+        {
+            $approval->update([
+                'status' => 'Revision',
+            ]);
+        }
+    }
     
     protected function getRedirectUrl(): string
     {

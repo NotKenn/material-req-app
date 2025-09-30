@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('lokasiPengantaran');
             $table->string('lampiran')->nullable();
             $table->string('notes')->nullable();
-            $table->string('departemen')->nullable();
         });
     }
 

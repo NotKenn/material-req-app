@@ -22,8 +22,12 @@ return new class extends Migration
             $table->dateTime('updated_at')->useCurrent()->useCurrentOnUpdate()->nullable();
             $table->unsignedInteger('edit_count')->default(0);
             $table->string('status');
-            $table->string('po_file');
+            $table->string('po_file')->nullable();
             $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->string('address')->nullable();
+            $table->string('name')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('departemen')->nullable();
         });
     }
 

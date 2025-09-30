@@ -19,11 +19,16 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Filament\Auth\CustomLogin;
+use App\Filament\Pages\SignaturePage;
 use App\Filament\Resources\MatRequests\MatRequestResource;
 use App\Filament\Resources\PoDetails\PoDetailsResource;
+use Filament\Actions\Action;
+use Filament\Navigation\MenuItem;
 use Filament\Navigation\NavigationBuilder;
 use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
+use Filament\Navigation\UserMenuItem;
+
 
 class AdminPanelProvider extends PanelProvider 
 {
@@ -37,6 +42,12 @@ class AdminPanelProvider extends PanelProvider
             ->databaseNotifications()
             ->databaseNotificationsPolling('10s')
             ->login(CustomLogin::class)
+            ->userMenuItems([
+                'my-signature' => MenuItem::make()
+                    ->label('My Signature')
+                    ->icon('heroicon-o-pencil-square') // bebas pilih ikon
+                    ->url('app/signature-page'), 
+            ])
             ->colors([
                 'primary' => Color::Teal,
             ])

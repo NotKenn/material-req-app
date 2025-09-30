@@ -10,6 +10,7 @@ use Filament\Actions\EditAction;
 use Filament\Forms\Components\Builder;
 use Filament\Notifications\Notification;
 use Filament\Support\Colors\Color;
+use Filament\Support\Enums\IconSize;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -24,23 +25,30 @@ class MatRequestsTable
             ->recordUrl(null)
             ->columns([
                 TextColumn::make('kodeRequest')
+                    ->wrap()    
                     ->searchable(),
                 TextColumn::make('requester.namaPT')
                     ->label('Requester')
+                    ->wrap()    
                     ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
+                    ->wrap()    
                     ->sortable(),
                 TextColumn::make('status')
+                    ->wrap()    
                     ->searchable(),
                 TextColumn::make('approval_badge')
-                    ->label('Approval')
+                    ->label('Supervisor Approval')
+                    ->wrap()    
+                    ->alignCenter()
                     ->badge()
                     ->getStateUsing(fn ($record) => $record->approvals()->latest('approved_at')->value('status') ?? 'pending')
                     ->colors([
-                        'gray' => 'Pending',
-                        'success' => 'Approved',
+                        'gray' => 'pending',
+                        'success' => 'approved',
                         'danger' => 'Rejected',
+                        'warning' => 'Revision',
                     ])
                     ->formatStateUsing(fn ($state) => ucfirst($state)),
                 
@@ -79,6 +87,7 @@ class MatRequestsTable
             ->recordActions([
                 Action::make('approve')
                     ->icon('heroicon-o-check')
+                    ->iconSize(IconSize::Medium)
                     ->label('')
                     ->color('success')
                     // ->visible(function ($record) {
@@ -89,6 +98,9 @@ class MatRequestsTable
                     ->requiresConfirmation()
                     ->modalHeading('Approve this Request?')
                     ->modalDescription('Press Confirm to Approve')
+                    ->tooltip('Approve this request')
+                    ->hidden(fn () => in_array(filament()->auth()->user()->role, ['User']))
+                    ->disabled(fn () => in_array(filament()->auth()->user()->role, ['User']))
                     ->action(fn ($record) => $record->approvals()->create([
                         'user_id' => filament()->auth()->user()->id,
                         'status' => 'Approved',
@@ -102,6 +114,7 @@ class MatRequestsTable
 
                 Action::make('reject')
                     ->icon('heroicon-o-x-mark')
+                    ->iconSize(IconSize::Medium)
                     ->label('')
                     // ->visible(function ($record) {
                     // if (! $record) return false;
@@ -112,6 +125,9 @@ class MatRequestsTable
                     ->requiresConfirmation()
                     ->modalHeading('Reject this Request?')
                     ->modalDescription('Press Confirm to Reject')
+                    ->hidden(fn () => in_array(filament()->auth()->user()->role, ['User']))
+                    ->disabled(fn () => in_array(filament()->auth()->user()->role, ['User']))
+                    ->tooltip('Reject this request')
                     ->action(fn ($record) => $record->approvals()->create([
                         'user_id' => filament()->auth()->user()->id,
                         'status' => 'Rejected',
