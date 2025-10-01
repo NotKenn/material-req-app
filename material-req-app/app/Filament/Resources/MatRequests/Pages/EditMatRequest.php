@@ -20,8 +20,6 @@ class EditMatRequest extends EditRecord
     {
         $approval = $this->record->approvals()->latest('approved_at')->first();
 
-        $changes = $this->record->wasChanged();
-
         if($approval->status === 'Rejected' && $this->record->wasChanged())
         {
             $approval->update([

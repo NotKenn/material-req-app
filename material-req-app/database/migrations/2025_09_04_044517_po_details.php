@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('notes')->nullable();
             $table->string('isRevised')->nullable();
             $table->string('gl_disc')->nullable();
+            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
         });
     }
 

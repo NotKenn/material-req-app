@@ -21,6 +21,17 @@ class EditPoDetails extends EditRecord
             DeleteAction::make(),
         ];
     }
+    protected function afterSave(): void
+    {
+        $approval = $this->record->approvals()->latest('approved_at')->first();
+
+        if($approval->status === 'Rejected' && $this->record->wasChanged())
+        {
+            $approval->update([
+                'status' => 'Revision',
+            ]);
+        }
+    }
     
     // protected function afterSave(): void
     // {

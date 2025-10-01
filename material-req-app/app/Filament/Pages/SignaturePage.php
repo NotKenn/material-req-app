@@ -17,18 +17,20 @@ class SignaturePage extends Page implements HasForms
     protected static ?string $title = 'Signature';
     protected static ?string $navigationLabel = 'My Signature';
     protected static ?string $slug = 'signature-page';
+    public $signature;
 
     // 🔑 ini penting supaya Blade kustom dipakai
     protected string $view = 'filament.pages.signature-page';
 
     public static function shouldRegisterNavigation(): bool
     {
-        return true; // kalau mau tampil di sidebar
+        return false; // true : tampil, false : gk ada di sidebar
     }
 
     public function mount(): void
     {
         // pre-fill kalau user sudah ada signature
+        $this->signature = filament()->auth()->user()?->signature;
         $this->form->fill([
             'signature' => filament()->auth()->user()?->signature,
         ]);
@@ -40,9 +42,9 @@ class SignaturePage extends Page implements HasForms
             FileUpload::make('signature')
                 ->label('Upload Signature')
                 ->directory('signatures')
+                ->disk('public')
                 ->image()
-                ->maxSize(1024)
-                ->required(),
+                ->maxSize(1024),
         ];
     }
 
