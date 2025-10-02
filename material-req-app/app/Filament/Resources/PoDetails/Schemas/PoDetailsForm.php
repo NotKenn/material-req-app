@@ -41,6 +41,7 @@ class PoDetailsForm
                             ->required(),
 
                         DatePicker::make('date')
+                            
                             ->required(),
 
                         TextInput::make('po_number')

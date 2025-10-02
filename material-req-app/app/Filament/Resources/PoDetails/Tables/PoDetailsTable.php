@@ -38,6 +38,10 @@ class PoDetailsTable
                 //     ->searchable(),
                 TextColumn::make('date')
                     ->label('Tanggal')
+                    ->date()
+                    ->sortable(),
+                TextColumn::make('created_at')
+                    ->label('Created At')
                     ->dateTime()
                     ->sortable(),
                 // TextColumn::make('termOfPayment')

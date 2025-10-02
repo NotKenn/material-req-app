@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('phone');
             $table->string('po_number');
             $table->date('date');
+            $table->dateTime('created_at')->useCurrent();
+            $table->dateTime('updated_at')->useCurrent()->useCurrentOnUpdate()->nullable();
             $table->string('termOfPayment');
             $table->string('vendorID');
             $table->string('notes')->nullable();
