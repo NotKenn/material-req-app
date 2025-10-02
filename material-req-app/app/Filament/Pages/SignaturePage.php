@@ -60,5 +60,7 @@ class SignaturePage extends Page implements HasForms
             ->title('Signature saved!')
             ->success()
             ->send();
+
+        $this->redirect(route('filament.admin.pages.dashboard'));
     }
 }

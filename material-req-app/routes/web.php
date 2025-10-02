@@ -72,7 +72,7 @@ Route::get('/test-pdf/{record}', function ($id) {
 
     $pdf = Pdf::loadView('exports.request', [
         'record' => $record,
-    ])->setPaper('a4', 'landscape');
+    ])->setPaper('a4', 'Landscape');
 
     return response()->stream(
         fn () => print($pdf->output()),

@@ -272,6 +272,22 @@
         </tr>
     </table>
     <table width="100%" style="margin-top: 15px; border-collapse: collapse; font-size: 12px;">
+        @php
+            $creator = DB::table('users')->where('id', $record->user_id)->first();
+            $creatorSignature = $creator?->signature 
+                ? storage_path('app/public/'.$creator->signature)
+                : null;
+            
+            $approvals = \App\Models\approvals::where('approvable_id', $record->id)
+                        ->where('approvable_type', \App\Models\PoDetails::class)
+                        ->latest('approved_at')
+                        ->first();
+            
+            $supervisor = DB::table('users')->where('id', $approvals->user_id)->first();
+            $supervisorSignature = $supervisor?->signature 
+                ? storage_path('app/public/'.$supervisor->signature)
+                : null;
+        @endphp
         <tr>
             <td style="width: 62.5%; border:none; vertical-align: top;">
                 <b>Key In By :</b>
@@ -287,12 +303,14 @@
             <td style="border:none;"></td>
             <td style="text-align: center; vertical-align: bottom; border:1px solid black;">
                 <!-- tanda tangan prepared -->
-                <div style="height:50px;"></div>
-                {{ auth()->user()->name }}
+                <img style="height:80px;width:100px" src={{ $creatorSignature }}> </img><br>
+                <div style="height:20px;"></div>
+                <b><u>{{ auth()->user()->name }}</u></b>
             </td>
             <td style="text-align: center; vertical-align: bottom; border:1px solid black;">
                 <!-- tanda tangan acknowledged -->
-                <div style="height:50px;"></div>
+                <img style="height:80px;width:100px" src={{ $supervisorSignature }}> </img><br>
+                <div style="height:20px;"></div>
                 Purchasing Manager
             </td>
         </tr>

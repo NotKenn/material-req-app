@@ -137,21 +137,44 @@
         @endforeach
     </table>
     <table style="width: 100%; margin-top: 40px; text-align: center; border: none;">
+    @php
+        $creator = DB::table('users')->where('id', $record->user_id)->first();
+        $creatorSignature = $creator?->signature 
+            ? storage_path('app/public/'.$creator->signature)
+            : null;
+        
+        $approvals = \App\Models\approvals::where('approvable_id', $record->id)
+                    ->where('approvable_type', \App\Models\MatRequest::class)
+                    ->latest('approved_at')
+                    ->first();
+        
+        $supervisor = DB::table('users')->where('id', $approvals->user_id)->first();
+        $supervisorSignature = $supervisor?->signature 
+            ? storage_path('app/public/'.$supervisor->signature)
+            : null;
+
+        $getPO = DB::table('po_mr')->where('mr_id', $record->id)->first();
+        $getPOuser = \App\Models\PoDetails::where('id', $getPO->po_id)->first();
+        $getUserID = \App\Models\User::where('id',$getPOuser?->user_id)->first();
+        $getSign = $getUserID->signature
+            ? storage_path('app/public/'.$getUserID->signature)
+            : null;
+    @endphp
     <tr>
         <td style="width: 33%; border: none;text-align: center">
-            Pemohon Ybs,<br><br><br><br>
-            <u>____________________</u><br>
-            Nama :<b><u>{{ auth()->user()->name }}</u></b>
+            Pemohon Ybs,<br><br>
+            <img style="height:120px;width:150px" src={{ $creatorSignature }}> </img><br>
+            Nama :<b><u>{{ $creator->name }}</u></b>
         </td>
         <td style="width: 33%; border: none;text-align: center">
-            Disetujui Atasan,<br><br><br><br>
-            <u>____________________</u><br>
-            Nama 
+            Disetujui Atasan,<br><br>
+            <img style="height:120px;width:150px" src={{ $supervisorSignature }}> </img><br>
+            Nama :<b><u>{{ $supervisor->name}}</u></b>
         </td>
         <td style="width: 33%; border: none;text-align: center">
-            Diproses,<br><br><br><br>
-            <u>____________________</u><br>
-            Purchasing
+            Diproses,<br><br>
+            <img style="height:120px;width:150px" src={{ $supervisorSignature }}> </img><br>
+            Nama : <b><u>{{ $getUserID->name}}</u></b>
         </td>
     </tr>
-</table>
+</table> 

@@ -37,7 +37,7 @@ class EditTrackMR extends EditRecord
                     $mr->wasChanged('status')
                         ? "Status berubah menjadi {$mr->status}"
                         : "File PO diupload"
-                )
+                )->warning()
                 ->sendToDatabase($recipient);
         }
     }
