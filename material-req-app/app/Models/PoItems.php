@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Filament\Resources\MatRequests\Schemas\MRItemsForm;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\PoDetails;
 
 class PoItems extends Model
 {
@@ -36,5 +37,9 @@ class PoItems extends Model
     public function mrItem()
     {
         return $this->belongsTo(matRequestItems::class, 'mr_item_id');
+    }
+    public function poDetail()
+    {
+        return $this->belongsTo(PoDetails::class, 'po_id', 'id');
     }
 }

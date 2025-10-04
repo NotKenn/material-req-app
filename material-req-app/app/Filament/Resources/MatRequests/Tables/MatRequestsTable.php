@@ -143,6 +143,9 @@ class MatRequestsTable
                 ->label('PDF')
                 ->color(Color::Sky)
                 ->icon(Heroicon::OutlinedDocumentArrowDown)
+                ->visible(fn ($record) => 
+                $record->approvals()->latest('approved_at')->value('status') === 'Approved'
+                )
                 ->action(function ($record) {
                     $pdf = Pdf::loadView('exports.request', [
                         'record' => $record,

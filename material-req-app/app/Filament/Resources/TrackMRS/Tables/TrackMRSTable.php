@@ -14,6 +14,7 @@ class TrackMRSTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->recordUrl(null)
             ->columns([
                 TextColumn::make('kodeRequest')
                     ->searchable(),

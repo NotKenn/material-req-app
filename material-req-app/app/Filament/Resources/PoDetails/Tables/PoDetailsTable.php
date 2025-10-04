@@ -43,6 +43,7 @@ class PoDetailsTable
                 TextColumn::make('created_at')
                     ->label('Created At')
                     ->dateTime()
+                    ->wrap()
                     ->sortable(),
                 // TextColumn::make('termOfPayment')
                 //     ->label('Term of Payment')

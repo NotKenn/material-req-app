@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\vendor;
 
 class PoDetails extends Model
 {
@@ -45,6 +46,5 @@ class PoDetails extends Model
     {
         return $this->hasMany(PoItems::class, 'po_id');
     }
-
 
 }
