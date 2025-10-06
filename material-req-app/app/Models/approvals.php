@@ -14,7 +14,6 @@ class approvals extends Model
         'user_id',
         'status',
         // 'level',
-        'notes',
         'approved_at',
     ];
 

@@ -17,7 +17,6 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('status')->nullable();
             // $table->unsignedInteger('level')->default(1); // kalau multi level approval enable, gitu lh
-            $table->text('notes')->nullable();
             $table->timestamp('approved_at')->nullable();
         });
     }

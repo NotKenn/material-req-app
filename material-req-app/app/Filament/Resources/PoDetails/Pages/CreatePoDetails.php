@@ -20,6 +20,14 @@ class CreatePoDetails extends CreateRecord
 
         return $data;
     }
+    protected function afterCreate(): void
+    {
+        $po = $this->record; // record PO yang baru dibuat
+
+        foreach ($po->matRequests as $mr) {
+            $mr->update(['status' => 'Processed']);
+        }
+    }
     
     // protected function afterSave(): void
     // {

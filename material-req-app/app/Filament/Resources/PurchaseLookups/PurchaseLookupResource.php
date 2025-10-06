@@ -103,8 +103,8 @@ class PurchaseLookupResource extends Resource
                 ])
                 ->query(function ($query, array $data) {
                     return $query
-                        ->when($data['from'], fn ($q, $date) => $q->whereDate('po_details.po_date', '>=', $date))
-                        ->when($data['until'], fn ($q, $date) => $q->whereDate('po_details.po_date', '<=', $date));
+                        ->when($data['from'], fn ($q, $date) => $q->whereDate('po_details.date', '>=', $date))
+                        ->when($data['until'], fn ($q, $date) => $q->whereDate('po_details.date', '<=', $date));
                 }),
         ]);
     }
