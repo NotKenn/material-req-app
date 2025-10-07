@@ -34,13 +34,13 @@ class PoDetailsResource extends Resource
     public static function shouldRegisterNavigation(): bool
     {
         $user = filament()->auth()->user();
-        return $user && in_array($user->role, ['Admin','Purchasing']);
+        return $user && in_array($user->role, ['Admin','Purchasing','POSupervisor']);
     }
 
     public static function canViewAny(): bool
     {
         $user = filament()->auth()->user();
-        return $user && in_array($user->role, ['Admin','Purchasing']);
+        return $user && in_array($user->role, ['Admin','Purchasing','POSupervisor']);
     }
 
     // Penting: biar pivot matRequests disave setelah PO tersimpan

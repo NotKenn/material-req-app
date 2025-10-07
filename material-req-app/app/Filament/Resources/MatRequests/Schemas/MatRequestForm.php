@@ -29,7 +29,7 @@ class MatRequestForm
                     ->dehydrated(true),
 
                 Select::make('requester_id')
-                    ->label('Requester')
+                    ->label('Penerima Barang')
                     ->relationship('requester', 'namaPT')
                     ->default(null)
                     ->createOptionForm([

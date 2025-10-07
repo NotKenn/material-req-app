@@ -153,12 +153,13 @@
             ? storage_path('app/public/'.$supervisor->signature)
             : null;
 
-        $getPO = DB::table('po_mr')->where('mr_id', $record->id)->first();
-        $getPOuser = \App\Models\PoDetails::where('id', $getPO->po_id)->first();
-        $getUserID = \App\Models\User::where('id',$getPOuser?->user_id)->first();
-        $getSign = $getUserID->signature
-            ? storage_path('app/public/'.$getUserID->signature)
-            : null;
+            //buat check null, klo null kosongin aja
+        // $getPO = DB::table('po_mr')->where('mr_id', $record->id)->first();
+        // $getPOuser = \App\Models\PoDetails::where('id', $getPO->po_id)->first();
+        // $getUserID = \App\Models\User::where('id',$getPOuser?->user_id)->first();
+        // $getSign = $getUserID->signature
+        //     ? storage_path('app/public/'.$getUserID->signature)
+        //     : null;
     @endphp
     <tr>
         <td style="width: 33%; border: none;text-align: center">
@@ -174,7 +175,7 @@
         <td style="width: 33%; border: none;text-align: center">
             Diproses,<br><br>
             <img style="height:120px;width:150px" src={{ $supervisorSignature }}> </img><br>
-            Nama : <b><u>{{ $getUserID->name}}</u></b>
+            Nama : <b><u></u></b>
         </td>
     </tr>
 </table> 

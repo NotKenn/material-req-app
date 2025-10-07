@@ -34,13 +34,13 @@ class MatRequestResource extends Resource
     public static function shouldRegisterNavigation(): bool
     {
         $user = filament()->auth()->user();
-        return $user && in_array($user->role, ['Admin','User']);
+        return $user && in_array($user->role, ['Admin','User','MRSupervisor']);
     }
 
     public static function canViewAny(): bool
     {
         $user = filament()->auth()->user();
-        return $user && in_array($user->role, ['Admin','User']);
+        return $user && in_array($user->role, ['Admin','User','MRSupervisor']);
     }
 
     public static function form(Schema $schema): Schema
