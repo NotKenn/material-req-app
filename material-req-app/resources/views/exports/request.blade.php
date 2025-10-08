@@ -153,29 +153,32 @@
             ? storage_path('app/public/'.$supervisor->signature)
             : null;
 
-            //buat check null, klo null kosongin aja
-        // $getPO = DB::table('po_mr')->where('mr_id', $record->id)->first();
-        // $getPOuser = \App\Models\PoDetails::where('id', $getPO->po_id)->first();
-        // $getUserID = \App\Models\User::where('id',$getPOuser?->user_id)->first();
-        // $getSign = $getUserID->signature
-        //     ? storage_path('app/public/'.$getUserID->signature)
-        //     : null;
+            // buat check null, klo null kosongin aja
+        $getPO = DB::table('po_mr')->where('mr_id', $record?->id)->first();
+        $getPOuser = \App\Models\PoDetails::where('id', $getPO?->po_id)->first();
+        $getUserID = \App\Models\User::where('id',$getPOuser?->user_id)->first();
+        $getSign = $getUserID?->signature
+            ? storage_path('app/public/'.$getUserID?->signature)
+            : null;
     @endphp
     <tr>
         <td style="width: 33%; border: none;text-align: center">
             Pemohon Ybs,<br><br>
             <img style="height:120px;width:150px" src={{ $creatorSignature }}> </img><br>
-            Nama :<b><u>{{ $creator->name }}</u></b>
+            Nama :<b><u>{{ $creator?->name }}</u></b> <br>
+            <u>{{ $record->created_at }}</u>
         </td>
         <td style="width: 33%; border: none;text-align: center">
             Disetujui Atasan,<br><br>
             <img style="height:120px;width:150px" src={{ $supervisorSignature }}> </img><br>
-            Nama :<b><u>{{ $supervisor->name}}</u></b>
+            Nama :<b><u>{{ $supervisor?->name}}</u></b> <br>
+            <u> {{ $approvals->approved_at }} </u>
         </td>
         <td style="width: 33%; border: none;text-align: center">
             Diproses,<br><br>
-            <img style="height:120px;width:150px" src={{ $supervisorSignature }}> </img><br>
-            Nama : <b><u></u></b>
+            <img style="height:120px;width:150px" src={{ $getSign }}> </img><br>
+            Nama : <b><u>{{$getUserID?->name}}</u></b>
+            {{-- add po date from po stuff here --}}
         </td>
     </tr>
 </table> 

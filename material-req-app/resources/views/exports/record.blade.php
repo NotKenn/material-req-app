@@ -273,9 +273,9 @@
     </table>
     <table width="100%" style="margin-top: 15px; border-collapse: collapse; font-size: 12px;">
         @php
-            $creator = DB::table('users')->where('id', $record->user_id)->first();
+            $creator = DB::table('users')->where('id', $record?->user_id)->first();
             $creatorSignature = $creator?->signature 
-                ? storage_path('app/public/'.$creator->signature)
+                ? storage_path('app/public/'.$creator?->signature)
                 : null;
             
             $approvals = \App\Models\approvals::where('approvable_id', $record->id)
@@ -283,9 +283,9 @@
                         ->latest('approved_at')
                         ->first();
             
-            $supervisor = DB::table('users')->where('id', $approvals->user_id)->first();
+            $supervisor = DB::table('users')->where('id', $approvals?->user_id)->first();
             $supervisorSignature = $supervisor?->signature 
-                ? storage_path('app/public/'.$supervisor->signature)
+                ? storage_path('app/public/'.$supervisor?->signature)
                 : null;
         @endphp
         <tr>
