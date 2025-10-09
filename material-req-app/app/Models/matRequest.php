@@ -20,7 +20,8 @@ class matRequest extends Model
         'name',
         'phone',
         'departemen',
-        'edit_count'
+        'edit_count',
+        'last_edited_by'
     ];
     
     public $timestamps = false;
@@ -38,7 +39,10 @@ class matRequest extends Model
                     ->where('approvable_type', self::class)
                     ->latestOfMany();
     }
-
+    public function editor()
+    {
+        return $this->belongsTo(User::class, 'last_edited_by');
+    }
     public function approvals()
     {
         return $this->morphMany(approvals::class, 'approvable');

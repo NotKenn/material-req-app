@@ -25,6 +25,7 @@ class TrackMRSTable
                     ->dateTime()
                     ->sortable(),
                 TextColumn::make('status')
+                    ->label('Proses PO')
                     ->searchable(),
                 TextColumn::make('po_file')
                     ->url(fn ($record) => $record->po_file ? asset('storage/' . $record->po_file) : null, shouldOpenInNewTab: true)
@@ -49,7 +50,7 @@ class TrackMRSTable
             ->recordActions([
                 EditAction::make()
                 ->visible(fn ($record) 
-                => in_array(filament()->auth()->user()?->role, ['Admin', 'Purchasing'])
+                =>in_array(filament()->auth()->user()?->role, ['Admin', 'Purchasing'])
                 )
                 // || $record->user_id === filament()->auth()->id() //yg ini pindahin ke atas
                                                                     //disamping kiri tutup kurung yg melayang 

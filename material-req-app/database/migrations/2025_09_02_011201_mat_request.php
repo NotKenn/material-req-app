@@ -28,6 +28,7 @@ return new class extends Migration
             $table->string('name')->nullable();
             $table->string('phone')->nullable();
             $table->string('departemen')->nullable();
+            $table->string('last_edited_by')->nullable()->constrained('users')->nullOnDelete();
         });
     }
 

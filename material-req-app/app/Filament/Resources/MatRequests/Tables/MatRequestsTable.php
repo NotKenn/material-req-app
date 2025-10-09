@@ -38,7 +38,7 @@ class MatRequestsTable
                 TextColumn::make('status')
                     ->wrap()    
                     ->searchable(),
-                TextColumn::make('approval_badge')
+                    TextColumn::make('approval_badge')
                     ->label('Supervisor Approval')
                     ->wrap()    
                     ->alignCenter()
@@ -49,10 +49,14 @@ class MatRequestsTable
                         'success' => 'approved',
                         'danger' => 'Rejected',
                         'warning' => 'Revision',
-                    ])
-                    ->formatStateUsing(fn ($state) => ucfirst($state)),
-                
-                // TextColumn::make('po_file')
+                        ])
+                        ->formatStateUsing(fn ($state) => ucfirst($state)),
+                    TextColumn::make('editor.name')
+                        ->label('Last Edit')
+                        ->alignCenter()
+                        ->wrap(),
+                        
+                        // TextColumn::make('po_file')
                 //     ->url(fn ($record) => $record->po_file ? asset('storage/' . $record->po_file) : null, shouldOpenInNewTab: true)
                 //     ->formatStateUsing(fn ($state) => $state ? 'Download' : '-') 
                 //     ->color('info')

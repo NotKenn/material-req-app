@@ -18,6 +18,13 @@ class EditMatRequest extends EditRecord
     }
     protected function afterSave(): void
     {
+        $userId = filament()->auth()->user()->id;
+
+        // Update last_edited_by
+        $this->record->updateQuietly([
+            'last_edited_by' => $userId,
+        ]);
+
         $approval = $this->record->approvals()->latest('approved_at')->first();
 
         if($approval->status === 'Rejected' && $this->record->wasChanged())

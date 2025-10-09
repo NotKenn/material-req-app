@@ -171,7 +171,7 @@
         <td style="width: 33%; border: none;text-align: center">
             Disetujui Atasan,<br><br>
             <img style="height:120px;width:150px" src={{ $supervisorSignature }}> </img><br>
-            Nama :<b><u>{{ $supervisor?->name}}</u></b> <br>
+           Nama :<b><u>{{ $supervisor?->name}}</u></b> <br>
             <u> {{ $approvals->approved_at }} </u>
         </td>
         <td style="width: 33%; border: none;text-align: center">
