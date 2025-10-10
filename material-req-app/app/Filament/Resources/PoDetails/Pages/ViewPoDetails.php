@@ -3,18 +3,17 @@
 namespace App\Filament\Resources\PoDetails\Pages;
 
 use App\Filament\Resources\PoDetails\PoDetailsResource;
-use Filament\Actions\CreateAction;
-use Filament\Actions\ViewAction;
-use Filament\Resources\Pages\ListRecords;
+use Filament\Actions\EditAction;
+use Filament\Resources\Pages\ViewRecord;
 
-class ListPoDetails extends ListRecords
+class ViewPoDetails extends ViewRecord
 {
     protected static string $resource = PoDetailsResource::class;
 
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make(),
+            // EditAction::make(),
         ];
     }
 }

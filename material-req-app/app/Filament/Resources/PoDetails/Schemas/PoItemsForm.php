@@ -23,7 +23,11 @@ class PoItemsForm
                     Select::make('matRequests')
                     ->label('Pilih Material Request')
                     ->multiple()
-                    ->relationship('matRequests', 'kodeRequest')
+                    ->relationship('matRequests', 'kodeRequest', function ($query) {
+                        $query->whereHas('latestApproval', function ($q) {
+                            $q->where('status', 'Approved');
+                        });
+                    })
                     ->searchable()
                     ->preload()
                     ->reactive()

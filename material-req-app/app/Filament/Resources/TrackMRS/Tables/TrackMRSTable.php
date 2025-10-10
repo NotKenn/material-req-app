@@ -44,8 +44,7 @@ class TrackMRSTable
                 }
 
                     return $query; // biarkan tanpa filter kalau bukan role User
-                })
-                ,
+                }),
             ])
             ->recordActions([
                 EditAction::make()

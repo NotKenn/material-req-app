@@ -5,6 +5,7 @@ namespace App\Filament\Resources\PoDetails;
 use App\Filament\Resources\PoDetails\Pages\CreatePoDetails;
 use App\Filament\Resources\PoDetails\Pages\EditPoDetails;
 use App\Filament\Resources\PoDetails\Pages\ListPoDetails;
+use App\Filament\Resources\PoDetails\Pages\ViewPoDetails;
 use App\Filament\Resources\PoDetails\Tables\PoDetailsTable;
 use App\Filament\Resources\PoDetails\Schemas\PoDetailsForm;
 use App\Filament\Resources\PoDetails\Schemas\PoItemsForm;
@@ -86,6 +87,7 @@ class PoDetailsResource extends Resource
             'index' => ListPoDetails::route('/'),
             'create' => CreatePoDetails::route('/create'),
             'edit' => EditPoDetails::route('/{record}/edit'),
+            'view' => ViewPoDetails::route('/{record}'),
         ];
     }
 }

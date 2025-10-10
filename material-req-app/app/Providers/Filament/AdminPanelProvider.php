@@ -46,7 +46,7 @@ class AdminPanelProvider extends PanelProvider
                 'my-signature' => Action::make('signature-page')
                     ->label('My Signature')
                     ->icon('heroicon-o-pencil-square') // bebas pilih ikon
-                    ->url('/signature-page')
+                    ->url('app/signature-page')
                     ->badge(fn (): ?string => filament()->auth()->user()->signature ? '✓' : '⚠️')
                     ->badgeColor(fn (): string => filament()->auth()->user()->signature ? 'success' : 'danger'),
             ])

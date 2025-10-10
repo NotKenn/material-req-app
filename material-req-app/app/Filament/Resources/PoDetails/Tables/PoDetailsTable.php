@@ -11,6 +11,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Filament\Actions\ViewAction;
 use Filament\Notifications\Notification;
 use Filament\Support\Enums\IconSize;
 use Filament\Tables\Columns\IconColumn;
@@ -140,6 +141,9 @@ class PoDetailsTable
                         print($pdf->output()), "record-{$record->id}.pdf"
                 );
                 }),
+                ViewAction::make()
+                ->hidden(fn () => in_array(filament()->auth()->user()->role, ['Purchasing']))
+                ->disabled(fn () => in_array(filament()->auth()->user()->role, ['Purchasing'])),
                 //nnti masukin function untuk dompdf export sesuai template, 
                 //nnti juga buat template di views/exports/ gitu
             ])

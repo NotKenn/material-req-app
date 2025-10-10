@@ -7,6 +7,7 @@ use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Builder;
 use Filament\Notifications\Notification;
 use Filament\Support\Colors\Color;
@@ -159,6 +160,9 @@ class MatRequestsTable
                         print($pdf->output()), "MR-{$record->kodeRequest}.pdf"
                 );
                 }),
+                ViewAction::make()
+                ->hidden(fn () => in_array(filament()->auth()->user()->role, ['User']))
+                ->disabled(fn () => in_array(filament()->auth()->user()->role, ['User'])),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

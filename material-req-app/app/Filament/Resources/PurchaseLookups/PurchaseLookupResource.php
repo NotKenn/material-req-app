@@ -7,6 +7,7 @@ use App\Filament\Resources\PurchaseLookups\Pages\EditPurchaseLookup;
 use App\Filament\Resources\PurchaseLookups\Pages\ListPurchaseLookups;
 use App\Filament\Resources\PurchaseLookups\Schemas\PurchaseLookupForm;
 use App\Filament\Resources\PurchaseLookups\Tables\PurchaseLookupsTable;
+use App\Models\PoDetails;
 use App\Models\PoItems;
 use App\Models\vendor;
 use BackedEnum;
@@ -15,6 +16,7 @@ use Filament\Forms\Components\Select;
 use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
+use Filament\Support\Colors\Color;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
@@ -79,7 +81,14 @@ class PurchaseLookupResource extends Resource
         ->columns([
             TextColumn::make('itemName')->label('Item')->searchable(),
             TextColumn::make('vendorName')->label('Vendor')->searchable(),
-            TextColumn::make('po_number')->label('PO Number')->searchable(),
+            TextColumn::make('po_number')->label('PO Number')
+            ->color(Color::Sky)
+            ->url(fn ($record) => $record->po_number 
+            ? route('filament.admin.resources.po-details.view',
+                PoDetails::where('id', $record->po_number)->value('id')
+            )
+            : null)
+            ->searchable(),
             TextColumn::make('po_date')->label('PO Date')->date(),
             TextColumn::make('qty')->label('Qty'),
             TextColumn::make('price')->label('Price')->money('idr'),

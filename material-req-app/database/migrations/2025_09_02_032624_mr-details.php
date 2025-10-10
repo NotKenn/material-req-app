@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('mr_details', function (Blueprint $table) {
             $table->id();
             $table->foreignId('mr_ids')->nullable()->constrained('mr_table')->nullOnDelete();
-            $table->dateTime('tanggal');
-            $table->dateTime('tanggalPerlu');
+            $table->date('tanggal');
+            $table->date('tanggalPerlu');
             $table->string('lokasiPengantaran');
             $table->string('lampiran')->nullable();
             $table->string('notes')->nullable();

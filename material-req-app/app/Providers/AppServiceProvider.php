@@ -43,7 +43,7 @@ class AppServiceProvider extends ServiceProvider
                 ->actions([
                     Action::make('Upload now')
                         ->button()
-                        ->url('/signature-page'),
+                        ->url('/app/signature-page'),
                 ])
                 ->sendToDatabase($user);
         }

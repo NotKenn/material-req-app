@@ -35,8 +35,8 @@ class matRequest extends Model
 
     public function latestApproval()
     {
-        return $this->hasOne(approvals::class, 'approvable_id')
-                    ->where('approvable_type', self::class)
+        return $this->morphOne(approvals::class, 'approvable','approvable_type','approvable_id')
+                    ->where('approvals.approvable_type', self::class)
                     ->latestOfMany();
     }
     public function editor()
