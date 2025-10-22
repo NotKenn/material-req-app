@@ -22,6 +22,7 @@ use App\Filament\Auth\CustomLogin;
 use App\Filament\Pages\SignaturePage;
 use App\Filament\Resources\MatRequests\MatRequestResource;
 use App\Filament\Resources\PoDetails\PoDetailsResource;
+use App\Http\Middleware\EnsureHasSignature;
 use Filament\Actions\Action;
 use Filament\Navigation\MenuItem;
 use Filament\Navigation\NavigationBuilder;
@@ -30,7 +31,7 @@ use Filament\Navigation\NavigationItem;
 use Filament\Navigation\UserMenuItem;
 
 
-class AdminPanelProvider extends PanelProvider 
+class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
@@ -46,7 +47,7 @@ class AdminPanelProvider extends PanelProvider
                 'my-signature' => Action::make('signature-page')
                     ->label('My Signature')
                     ->icon('heroicon-o-pencil-square') // bebas pilih ikon
-                    ->url('app/signature-page')
+                    ->url('/app/signature-page')
                     ->badge(fn (): ?string => filament()->auth()->user()->signature ? '✓' : '⚠️')
                     ->badgeColor(fn (): string => filament()->auth()->user()->signature ? 'success' : 'danger'),
             ])
@@ -73,6 +74,7 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+                EnsureHasSignature::class,
             ])
             ->authMiddleware([
                 Authenticate::class,

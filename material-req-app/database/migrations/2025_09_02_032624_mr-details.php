@@ -17,7 +17,7 @@ return new class extends Migration
             $table->date('tanggal');
             $table->date('tanggalPerlu');
             $table->string('lokasiPengantaran');
-            $table->string('lampiran')->nullable();
+            $table->json('lampiran')->nullable();
             $table->string('notes')->nullable();
         });
     }

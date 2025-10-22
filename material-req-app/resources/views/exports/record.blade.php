@@ -9,6 +9,12 @@
         th, td { border: 1px solid #ddd; padding: 6px; text-align: left; }
         th{background-color:gray; text-align:center;}
         #logo-black{ width:25%;}
+        .td-money {
+        text-align: right;
+        }
+        .td-money span {
+            float: left;
+        }
     </style>
 </head>
 <body>
@@ -37,7 +43,7 @@
                 </div>
             @else
                 <div style="font-size:12px; margin-top:2px;">
-                    
+
                 </div>
             @endif
         </td>
@@ -126,7 +132,7 @@
                 <table style="width:100%; border-collapse: collapse; font-size:12px; border:1px solid #000;">
                     <tr>
                         <th style="background:grey; text-align:center; border:1px solid #000; padding:6px;">
-                            Purchase Form
+                            Purchase From
                         </th>
                     </tr>
                     <tr>
@@ -165,7 +171,7 @@
                 <table style="width:100%; border-collapse: collapse; font-size:12px; border:1px solid #000;">
                     <tr>
                         <th style="background:grey; text-align:center; border:1px solid #000; padding:6px;">
-                            Delivery To
+                            Deliver To
                         </th>
                     </tr>
                     <tr>
@@ -200,91 +206,164 @@
             </td>
         </tr>
     </table>
-    {{-- Table Items --}}
-    <table>
-        <th>Description</th>
-        <th colspan="2">Qty</th>
-        <th>Unit Price</th>
-        <th>Discount</th>
-        <th>Amount</th>
-        @php
-            $po_items = \App\Models\PoItems::where('po_id', $record->id)->get();
-            $subtotal = \App\Models\PoItems::where('po_id', $record->id)->sum('amount');
-            $discountRaw = \App\Models\PoDetails::where('id', $record->id)->value('gl_disc'); // pakai value() biar langsung string/number
-            $discountValue = 0;
+{{-- Table Items --}}
+<table>
+    <thead>
+        <tr>
+            <th>Description</th>
+            <th colspan="2">Qty</th>
+            <th colspan="2">Unit Price</th>
+            <th colspan="2">Discount</th>
+            <th colspan="2">Amount</th>
+        </tr>
+    </thead>
+    <tbody>
+@php
+    $po_items = \App\Models\PoItems::where('po_id', $record->id)->get();
+    $subtotal = 0;
+    $totalItemDiscount = 0;
 
-            // Hitung discount
-            if ($discountRaw) {
-                if (is_string($discountRaw) && str_contains($discountRaw, '%')) {
-                    // Discount persen
-                    $percent = (float) str_replace('%', '', $discountRaw);
-                    $discountValue = ($percent / 100) * $subtotal;
-                } else {
-                    // Discount nominal (buang non-digit biar aman)
-                    $discountValue = (float) preg_replace('/[^0-9]/', '', (string) $discountRaw);
-                }
+    foreach ($po_items as $item) {
+        $itemSubtotal = $item->price * $item->qty;
+        $discountRaw = trim((string) ($item->discount ?? ''));
+        $discountValue = 0;
+
+        if ($discountRaw !== '') {
+            if (str_contains($discountRaw, '%')) {
+                // Diskon persen
+                $percent = (float) str_replace('%', '', $discountRaw);
+                $discountValue = ($percent / 100) * $itemSubtotal;
+            } else {
+                // Diskon nominal
+                $discountValue = (float) preg_replace('/[^0-9.]/', '', $discountRaw);
             }
-            $grandTotal = $subtotal - $discountValue;
-            
-            if ($grandTotal < 0) {
-                $grandTotal = 0;
+        }
+
+        $item->calculated_discount = $discountValue;
+        $item->final_total = $itemSubtotal - $discountValue;
+
+        $subtotal += $itemSubtotal;
+        $totalItemDiscount += $discountValue;
+    }
+
+    // === DISKON GLOBAL (optional) ===
+    $globalDiscRaw = \App\Models\PoDetails::where('id', $record->id)->value('gl_disc');
+    $globalDiscValue = 0;
+
+    if ($globalDiscRaw) {
+        $globalDiscRaw = trim((string) $globalDiscRaw);
+        if (str_contains($globalDiscRaw, '%')) {
+            $percent = (float) str_replace('%', '', $globalDiscRaw);
+            // Diskon global dihitung dari subtotal SETELAH diskon item
+            $globalDiscValue = ($percent / 100) * ($subtotal - $totalItemDiscount);
+        } else {
+            $globalDiscValue = (float) preg_replace('/[^0-9.]/', '', $globalDiscRaw);
+        }
+    }
+
+    $totalDiscount = $totalItemDiscount + $globalDiscValue;
+    $grandTotal = max($subtotal - $totalDiscount, 0);
+@endphp
+
+
+    @foreach ($po_items as $item)
+        @php
+            $discountRaw = trim((string) ($item->discount ?? ''));
+            if ($discountRaw === '') {
+                $discountDisplay = '-';
+            } elseif (str_contains($discountRaw, '%')) {
+                $percent = (float) str_replace('%', '', $discountRaw);
+                $discountDisplay = number_format($item->calculated_discount, 0, ',', '.') . "(". "{$percent}%" . ")";
+                // dd($discountDisplay);
+            } else {
+                $discountDisplay = number_format($item->calculated_discount, 0, ',', '.');
             }
         @endphp
-        @foreach ($po_items as $item)
-            <tr>
-                <td>{{ $item->itemName }}</td>
-                <td style="border-right:none;">{{ $item->qty }}</td>
-                <td style="border-left:none;">{{ $item->unit }}</td>
-                <td>Rp. {{ number_format($item->price,0,',','.') }}</td>                
-                <td>{{ number_format($item->discount,0,',','.') }}</td>
-                <td>Rp {{ number_format($item->total,0,',','.') }}</td>
-            </tr>
-            {{-- foreach untuk data dari po_items where po_id itu $record->id, gk tau gmn cara ambilnya --}}
-        @endforeach
-    </table>
-    {{-- Remarks --}}
-    <table style="width:100%; border-collapse: collapse; margin-top:10px;" border="1">
+
         <tr>
-            <td style="width:62.5%; vertical-align:top; padding:5px;font-size:11px;">
-                <b>REMARKS:</b><br>
-                * Pembayaran akan dilakukan oleh nama PT yang tertera di Company Name <br>
-                * Setiap pengantaran barang mohon dilampirkan PO, jika tidak melampirkan PO maka barang tersebut dikembalikan oleh penerima barang <br>
-                * Pada sangat pengantaran WAJIB mencantumkan kuantiti barang di Delivery Order dalam satuan sesuai PO. <br>
-                * Yang berwenang menerima barang HANYA nama yang tertera diatas kolom Delivery To. 
-                Sebelum pengantaran mohon hubungi kepada pihak yang berwenang terlebih dahulu <br>
+            <td>{{ $item->itemName }}</td>
+            <td style="border-right:none;">{{ $item->qty }}</td>
+            <td style="border-left:none;">{{ $item->unit }}</td>
+
+            <!-- Unit Price -->
+            <td style="border-right:none;text-align:left;width:20px" class="td-money">
+                Rp.
             </td>
-            <td style="width:36.5%; padding:5px; max-width:36.5%">
-                <table style="width:100%; border-collapse: collapse;" border="1">
-                    <tr>
-                        <td>SUBTOTAL</td>
-                        <td style="text-align:right;">Rp {{ number_format($subtotal,0,',','.') }}</td>
-                    </tr>
-                    <tr>
-                        <td>DISCOUNT</td>
-                        <td style="text-align:right;">Rp {{ number_format($discountValue,0,',','.') }}</td>
-                    </tr>
-                    <tr>
-                        <td><b>GRAND TOTAL</b></td>
-                        <td style="text-align:right;"><b>Rp {{ number_format($grandTotal,0,',','.') }}</b></td>
-                    </tr>
-                </table>
+            <td style="border-left:none;" class="td-money">
+                {{ number_format($item->price, 0, ',', '.') }}
+            </td>
+
+            <!-- Discount -->
+            <td style="border-right:none;text-align:left;width:20px" class="td-money">
+                Rp.
+            </td>
+            <td style="border-left:none;max-width:4rem" class="td-money">
+                    {{ $discountDisplay }}
+            </td>
+
+            <!-- Amount -->
+            <td style="border-right:none;text-align:left;width:20px" class="td-money">
+                Rp.
+            </td>
+            <td style="border-left:none;" class="td-money">
+                {{ number_format($item->final_total, 0, ',', '.') }}
             </td>
         </tr>
-    </table>
+        {{-- <tr>
+            <td>{{ $item->itemName }}</td>
+            <td style="border-right:none;">{{ $item->qty }}</td>
+            <td style="border-left:none;">{{ $item->unit }}</td>
+            <td style="float:right"><span>Rp.</span>{{ number_format($item->price, 0, ',', '.') }}</div>
+            </td>
+            <td> {{ $discountDisplay }}</td>
+            <td><span>Rp.</span> {{ number_format($item->final_total, 0, ',', '.') }}</td>
+        </tr> --}}
+    @endforeach
+    </tbody>
+</table>
+{{-- Remarks & Totals --}}
+<table style="width:100%; border-collapse: collapse; margin-top:10px;" border="1">
+    <tr>
+        <td style="width:62.5%; vertical-align:top; padding:5px;font-size:11px;">
+            <b>REMARKS:</b><br>
+            * Pembayaran akan dilakukan oleh nama PT yang tertera di Company Name <br>
+            * Setiap pengantaran barang mohon dilampirkan PO, jika tidak melampirkan PO maka barang tersebut dikembalikan oleh penerima barang <br>
+            * Pada sangat pengantaran WAJIB mencantumkan kuantiti barang di Delivery Order dalam satuan sesuai PO. <br>
+            * Yang berwenang menerima barang HANYA nama yang tertera diatas kolom Delivery To.
+            Sebelum pengantaran mohon hubungi kepada pihak yang berwenang terlebih dahulu <br>
+        </td>
+        <td style="width:36.5%; padding:5px; max-width:36.5%">
+            <table style="width:100%; border-collapse: collapse;" border="1">
+                <tr>
+                    <td>SUBTOTAL</td>
+                    <td style="text-align:right;">Rp {{ number_format($subtotal,0,',','.') }}</td>
+                </tr>
+                <tr>
+                    <td>DISCOUNT</td>
+                    <td style="text-align:right;">Rp {{ number_format($totalDiscount ,0,',','.') }}</td>
+                </tr>
+                <tr>
+                    <td><b>GRAND TOTAL</b></td>
+                    <td style="text-align:right;"><b>Rp {{ number_format($grandTotal,0,',','.') }}</b></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
     <table width="100%" style="margin-top: 15px; border-collapse: collapse; font-size: 12px;">
         @php
             $creator = DB::table('users')->where('id', $record?->user_id)->first();
-            $creatorSignature = $creator?->signature 
+            $creatorSignature = $creator?->signature
                 ? storage_path('app/public/'.$creator?->signature)
                 : null;
-            
+
             $approvals = \App\Models\approvals::where('approvable_id', $record->id)
                         ->where('approvable_type', \App\Models\PoDetails::class)
                         ->latest('approved_at')
                         ->first();
-            
+
             $supervisor = DB::table('users')->where('id', $approvals?->user_id)->first();
-            $supervisorSignature = $supervisor?->signature 
+            $supervisorSignature = $supervisor?->signature
                 ? storage_path('app/public/'.$supervisor?->signature)
                 : null;
         @endphp

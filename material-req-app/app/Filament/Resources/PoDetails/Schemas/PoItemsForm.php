@@ -5,7 +5,7 @@ namespace App\Filament\Resources\PoDetails\Schemas;
 use App\Models\MatRequestItems;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\Select; 
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -114,7 +114,7 @@ class PoItemsForm
                                 ->dehydrated(),
 
                             TextInput::make('price')
-                                ->label('Harga')
+                                ->label('Harga / Satuan')
                                 ->suffix('Rp')
                                 ->reactive()
                                 ->debounce(500)
@@ -147,7 +147,8 @@ class PoItemsForm
 
                             TextInput::make('subtotal')
                                 ->numeric()
-                                ->dehydrated(true),
+                                ->dehydrated(true)
+                                ->hidden(),
 
                             TextInput::make('discount')
                                 ->label('Diskon')

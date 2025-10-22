@@ -34,7 +34,17 @@ class MRDetailsForm
                         ->required(),
 
                     FileUpload::make('lampiran')
-                        ->label('Lampiran'),
+                        ->label('Lampiran')
+                        ->multiple()
+                        ->directory('lampiran')
+                        ->reorderable()
+                        ->downloadable()
+                        ->openable()
+                        ->preserveFilenames()
+                        ->panelLayout('grid') // bisa 'grid', 'list', atau 'compact'
+                        ->extraAttributes([
+                                'style' => 'max-height: 200px; overflow-y: auto;',
+                        ]),
 
                     TextInput::make('notes')
                         ->label('Notes'),

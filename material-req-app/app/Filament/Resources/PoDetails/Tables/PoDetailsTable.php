@@ -66,6 +66,14 @@ class PoDetailsTable
                         'warning' => 'Revision',
                     ])
                     ->formatStateUsing(fn ($state) => ucfirst($state)),
+                TextColumn::make('approved_by')
+                    ->label('Reviewed By')
+                    ->getStateUsing(fn ($record) =>
+                        $record->approvals()
+                            ->latest('approved_at')
+                            ->first()?->user?->name
+                            ?? '-'
+                    ),
             ])
             ->filters([
                 //
@@ -129,22 +137,30 @@ class PoDetailsTable
                 ->label('PDF')
                 ->color(Color::Sky)
                 ->icon(Heroicon::OutlinedDocumentArrowDown)
-                ->visible(fn ($record) => 
+                ->visible(fn ($record) =>
                 $record->approvals()->latest('approved_at')->value('status') === 'Approved'
                 )
-                ->action(function ($record) {
-                    $pdf = Pdf::loadView('exports.record', [
-                        'record' => $record,
-                    ])
-                    ->setPaper('a4');
-                    return response()->streamDownload(fn () =>
-                        print($pdf->output()), "record-{$record->id}.pdf"
-                );
-                }),
+                ->url(fn ($record) => route('mr.preview.pdf', $record))
+                ->openUrlInNewTab(),
+                // ->action(function ($record) {
+                //     $pdf = Pdf::loadView('exports.record', [
+                //         'record' => $record,
+                //     ])
+                //     ->setPaper('a4');
+                //     // return response()->stream(fn () =>
+                //     //     print($pdf->output()), "record-{$record->id}.pdf"
+                // // );
+                //         return response()->stream(function () use ($pdf) {
+                //             echo $pdf->output();
+                //         }, 200, [
+                //             'Content-Type' => 'application/pdf',
+                //             'Content-Disposition' => 'inline; filename="MR-' . $record->id . '.pdf"',
+                //         ]);
+                // }),
                 ViewAction::make()
                 ->hidden(fn () => in_array(filament()->auth()->user()->role, ['Purchasing']))
                 ->disabled(fn () => in_array(filament()->auth()->user()->role, ['Purchasing'])),
-                //nnti masukin function untuk dompdf export sesuai template, 
+                //nnti masukin function untuk dompdf export sesuai template,
                 //nnti juga buat template di views/exports/ gitu
             ])
             ->toolbarActions([

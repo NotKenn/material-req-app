@@ -6,6 +6,7 @@ use App\Models\lastNumbers;
 use App\Models\mrDetails;
 use App\Models\matRequest;
 use App\Models\requesters;
+use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
 use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Select;
@@ -37,15 +38,19 @@ class MatRequestForm
                         ->label('Nama PT')
                         ->required(),
                         TextInput::make('alamatPT')
-                        ->label('Alamat PT')
+                        ->label('Lokasi Delivery')
                         ->required(),
                         TextInput::make('namaKontakPT')
-                        ->label('Nama Kontak PT')
+                        ->label('Penerima')
                         ->required(),
                         TextInput::make('noTelpKontakPT')
-                        ->label('No. Telp Kontak PT')
+                        ->label('Kontak Penerima')
                         ->required(),
                     ])
+                    ->createOptionAction(function (Action $action) {
+                        return $action
+                            ->modalHeading('Create Penerima Barang');
+                    })
                     ->required(),
 
                 ToggleButtons::make('status')
@@ -56,7 +61,7 @@ class MatRequestForm
                         'Approved'   => 'Approved',
                         'Revision'   => 'Revision',
                         'Rejected'   => 'Rejected',
-                    ]) 
+                    ])
                     ->colors([
                         'New'        => 'info',      // biru
                         'Processing' => 'warning', // kuning
@@ -94,7 +99,7 @@ class MatRequestForm
             ->extraAttributes([
                 'style' => 'border-radius:0.5rem;width:100%',
             ]),
-            
+
     ]);
     }
 }

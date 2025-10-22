@@ -44,6 +44,7 @@ class SignaturePage extends Page implements HasForms
                 ->directory('signatures')
                 ->disk('public')
                 ->image()
+                // ->filetype('png')
                 ->maxSize(1024),
         ];
     }

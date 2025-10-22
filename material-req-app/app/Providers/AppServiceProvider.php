@@ -32,7 +32,7 @@ class AppServiceProvider extends ServiceProvider
                 ->title('Signature Missing')
                 ->body('Please upload your signature.')
                 ->danger()
-                ->persistent() // biar ga auto ilang kalau kamu mau
+                ->persistent() // biar ga auto ilang kalau mau
                 ->send();
 
             // Database notifikasi (masuk bell)

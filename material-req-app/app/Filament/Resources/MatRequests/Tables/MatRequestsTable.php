@@ -26,22 +26,22 @@ class MatRequestsTable
             ->recordUrl(null)
             ->columns([
                 TextColumn::make('kodeRequest')
-                    ->wrap()    
+                    ->wrap()
                     ->searchable(),
                 TextColumn::make('requester.namaPT')
                     ->label('Requester')
-                    ->wrap()    
+                    ->wrap()
                     ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
-                    ->wrap()    
+                    ->wrap()
                     ->sortable(),
                 TextColumn::make('status')
-                    ->wrap()    
+                    ->wrap()
                     ->searchable(),
-                    TextColumn::make('approval_badge')
+                TextColumn::make('approval_badge')
                     ->label('Supervisor Approval')
-                    ->wrap()    
+                    ->wrap()
                     ->alignCenter()
                     ->badge()
                     ->getStateUsing(fn ($record) => $record->approvals()->latest('approved_at')->value('status') ?? 'pending')
@@ -51,18 +51,26 @@ class MatRequestsTable
                         'danger' => 'Rejected',
                         'warning' => 'Revision',
                         ])
-                        ->formatStateUsing(fn ($state) => ucfirst($state)),
-                    TextColumn::make('editor.name')
-                        ->label('Last Edit')
-                        ->alignCenter()
-                        ->wrap(),
-                        
+                    ->formatStateUsing(fn ($state) => ucfirst($state)),
+                TextColumn::make('editor.name')
+                    ->label('Last Edit')
+                    ->alignCenter()
+                    ->wrap(),
+                TextColumn::make('approved_by')
+                    ->label('Reviewed By')
+                    ->getStateUsing(fn ($record) =>
+                        $record->approvals()
+                            ->latest('approved_at')
+                            ->first()?->user?->name
+                            ?? '-'
+                    ),
+
                         // TextColumn::make('po_file')
                 //     ->url(fn ($record) => $record->po_file ? asset('storage/' . $record->po_file) : null, shouldOpenInNewTab: true)
-                //     ->formatStateUsing(fn ($state) => $state ? 'Download' : '-') 
+                //     ->formatStateUsing(fn ($state) => $state ? 'Download' : '-')
                 //     ->color('info')
                 //     ->searchable(),
-            ]) 
+            ])
             ->defaultSort('created_at', 'desc')
             ->filters([
                 Filter::make('myRequests')
@@ -73,7 +81,6 @@ class MatRequestsTable
                 if ($user && $user->role === 'User') {
                     return $query->where('user_id', $user->id);
                 }
-
                     return $query; // biarkan tanpa filter kalau bukan role User
                 })
                 ->default(function () {
@@ -145,21 +152,32 @@ class MatRequestsTable
                     ])),
                 EditAction::make(), //buat kalau supervisor, kasih approve button
                 Action::make('exportPdf')
+                ->openUrlInNewTab()
                 ->label('PDF')
                 ->color(Color::Sky)
                 ->icon(Heroicon::OutlinedDocumentArrowDown)
-                ->visible(fn ($record) => 
+                ->visible(fn ($record) =>
                 $record->approvals()->latest('approved_at')->value('status') === 'Approved'
                 )
-                ->action(function ($record) {
-                    $pdf = Pdf::loadView('exports.request', [
-                        'record' => $record,
-                    ])
-                    ->setPaper('a4','landscape');
-                    return response()->streamDownload(fn () =>
-                        print($pdf->output()), "MR-{$record->kodeRequest}.pdf"
-                );
-                }),
+                ->url(fn ($record) => route('mr.preview.pdf', $record))
+                ->openUrlInNewTab(),
+                // ->action(function ($record) {
+                //     $pdf = Pdf::loadView('exports.request', [
+                //         'record' => $record,
+                //     ])
+                //     ->setPaper('a4','landscape');
+                //     return response()->stream(function () use ($pdf) {
+                //     echo $pdf->output();
+                // }, 200, [
+                //     'Content-Type' => 'application/pdf',
+                //     'Content-Disposition' => 'inline; filename="MR-' . $record->kodeRequest . '.pdf"',
+                // ]);
+
+                //     return response()->streamDownload(fn () =>
+                //         print($pdf->output()), "MR-{$record->kodeRequest}.pdf"
+                // );
+
+                // }),
                 ViewAction::make()
                 ->hidden(fn () => in_array(filament()->auth()->user()->role, ['User']))
                 ->disabled(fn () => in_array(filament()->auth()->user()->role, ['User'])),

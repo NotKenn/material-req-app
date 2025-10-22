@@ -30,7 +30,7 @@ use Filament\Notifications\Notification;
 // });
 // Route::get('/test-filament-notif', function () {
 //     $recipient = User::find(3);
-    
+
 
 //     if (! $recipient) {
 //         return 'User tidak ditemukan';
@@ -83,3 +83,35 @@ Route::get('/test-pdf/{record}', function ($id) {
         ]
     );
 });
+
+Route::get('/mr/{record}/pdf', function ($id) {
+    $record = MatRequest::findOrFail($id);
+
+    $pdf = Pdf::loadView('exports.request', compact('record'))
+        ->setPaper('a4', 'landscape');
+
+    return response()->stream(
+        fn() => print($pdf->output()),
+        200,
+        [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => "inline; filename=MR-{$record->kodeRequest}.pdf",
+        ]
+    );
+})->name('mr.preview.pdf');
+
+Route::get('/po/{record}/pdf', function ($id) {
+    $record = PoDetails::findOrFail($id);
+
+    $pdf = Pdf::loadView('exports.record', compact('record'))
+        ->setPaper('a4', 'potrait');
+
+    return response()->stream(
+        fn() => print($pdf->output()),
+        200,
+        [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => "inline; filename=PO-{$record->po_number}.pdf",
+        ]
+    );
+})->name('po.preview.pdf');

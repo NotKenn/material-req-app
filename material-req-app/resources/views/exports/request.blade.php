@@ -24,22 +24,22 @@
                 Material Request
             </div>
         </td>
-        
+
         <!-- Judul kanan -->
         <td style="width:33%; text-align:center; vertical-align:top;border:none; padding:5px">
             <div style="font-size:18px; font-weight:bold;">
                 MR No. : {{ $record->kodeRequest }}
-                
+
             </div>
         </td>
     </tr>
     @php
         $getReqName = DB::table('mr_table')
             ->join('requesters', 'mr_table.requester_id', '=', 'requesters.id')
-            ->where('mr_table.id', $record->id) // ambil MR tertentu 
+            ->where('mr_table.id', $record->id) // ambil MR tertentu
             ->first();
             // ->value('requesters.namaPT'); // langsung value kalau cuma satu
-        
+
         $details = \App\Models\mrDetails::where('mr_ids', $record->id)->first();
     @endphp
     </table>
@@ -136,20 +136,26 @@
             {{-- foreach untuk data dari po_items where po_id itu $record->id, gk tau gmn cara ambilnya --}}
         @endforeach
     </table>
+    {{-- Notes dari table masukin ke sini --}}
+    @php
+        $getNotes = DB::table('mr_details')->where('mr_ids', $record->id)->value('notes');
+    @endphp
+    <p>Notes : {{ $getNotes }}</p>
+
     <table style="width: 100%; margin-top: 40px; text-align: center; border: none;">
     @php
         $creator = DB::table('users')->where('id', $record->user_id)->first();
-        $creatorSignature = $creator?->signature 
+        $creatorSignature = $creator?->signature
             ? storage_path('app/public/'.$creator->signature)
             : null;
-        
+
         $approvals = \App\Models\approvals::where('approvable_id', $record->id)
                     ->where('approvable_type', \App\Models\MatRequest::class)
                     ->latest('approved_at')
                     ->first();
-        
+
         $supervisor = DB::table('users')->where('id', $approvals->user_id)->first();
-        $supervisorSignature = $supervisor?->signature 
+        $supervisorSignature = $supervisor?->signature
             ? storage_path('app/public/'.$supervisor->signature)
             : null;
 
@@ -181,4 +187,39 @@
             {{-- add po date from po stuff here --}}
         </td>
     </tr>
-</table> 
+</table>
+{{-- Attachment Section --}}
+@php
+    $details = \App\Models\mrDetails::where('mr_ids', $record->id)->first();
+    $attachments = $details && $details->lampiran
+        ? json_decode($details->lampiran, true)
+        : [];
+@endphp
+
+@if (!empty($attachments))
+    <div style="page-break-before: always;"></div>
+    <h3 style="text-align: center;">Lampiran</h3>
+
+    @foreach ($attachments as $index => $path)
+        @php
+            $absolutePath = storage_path('app/private/' . $path);
+            $extension = strtolower(pathinfo($absolutePath, PATHINFO_EXTENSION));
+        @endphp
+
+        <div style="text-align:center; margin-top:10px;">
+            <h4>Lampiran {{ $index + 1 }}</h4>
+
+            @if (in_array($extension, ['jpg', 'jpeg', 'png']))
+                <img
+                    src="data:image/{{ $extension }};base64,{{ base64_encode(file_get_contents($absolutePath)) }}"
+                    alt="Lampiran {{ $index + 1 }}"
+                    style="max-width: 90%; max-height: 600px; object-fit: contain;"
+                >
+            @elseif ($extension === 'pdf')
+                <p>📄 File PDF: {{ basename($filePath) }}</p>
+            @else
+                <p>📄 File: {{ basename($path) }}</p>
+            @endif
+        </div>
+    @endforeach
+@endif
