@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('subtotal')->default(0);
             $table->string('discount')->default(0);
             $table->string('total')->default(0);
+            $table->string('note')->nullable();
         });
     }
 

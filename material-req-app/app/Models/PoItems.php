@@ -12,7 +12,7 @@ class PoItems extends Model
 
     protected $fillable = [
         'po_id', //fk ke po_details.id
-        'mr_item_id', //jaga-jaga biar gk ke overwrite 
+        'mr_item_id', //jaga-jaga biar gk ke overwrite
         'itemName', //pake dari MR
         'qty', // ini juga
         'unit', // ini juga
@@ -20,10 +20,11 @@ class PoItems extends Model
         'amount',
         'subtotal',
         'discount',
-        'total'
+        'total',
+        'note'
     ];
     public $timestamps = false;
-    
+
     protected $casts = [
     'price' => 'string',
     'discount' => 'string',

@@ -69,6 +69,7 @@ class PoItemsForm
                                     'subtotal'   => null,
                                     'discount'   => '0',
                                     'total'      => null,
+                                    'note'      => $item->notes ?? '',
                                 ];
                             })->toArray();
 
@@ -101,16 +102,13 @@ class PoItemsForm
 
                             TextInput::make('itemName')
                                 ->label('Item')
-                                ->disabled()
                                 ->dehydrated(),
 
                             TextInput::make('qty')
                                 ->numeric()
-                                ->disabled()
                                 ->dehydrated(),
 
                             TextInput::make('unit')
-                                ->disabled()
                                 ->dehydrated(),
 
                             TextInput::make('price')
@@ -139,6 +137,9 @@ class PoItemsForm
                                     $set('total', max($amount - $discountValue, 0));
                                 })
                                 ->dehydrateStateUsing(fn($state) => preg_replace('/[^0-9]/', '', (string) $state)),
+
+                            TextInput::make('note')
+                                ->label('Keterangan'),
 
                             TextInput::make('amount')
                                 ->label('Jumlah')
