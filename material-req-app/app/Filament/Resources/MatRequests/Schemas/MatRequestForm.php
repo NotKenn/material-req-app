@@ -61,6 +61,7 @@ class MatRequestForm
                         'Approved'   => 'Approved',
                         'Revision'   => 'Revision',
                         'Rejected'   => 'Rejected',
+                        'Closed'     => 'Closed',
                     ])
                     ->colors([
                         'New'        => 'info',      // biru
@@ -68,6 +69,7 @@ class MatRequestForm
                         'Approved'   => 'success', // hijau
                         'Revision'   => Color::Slate,
                         'Rejected'   => 'danger', // merah
+                        'Closed'     => Color::Teal,
                     ])
                     ->inline()
                     ->columnSpanFull()

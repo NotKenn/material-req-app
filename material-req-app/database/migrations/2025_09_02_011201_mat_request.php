@@ -29,7 +29,7 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->string('departemen')->nullable();
             $table->foreignId('last_edited_by')->nullable()->constrained('users')->nullOnDelete();
-            $table->string('isFulfilled')->nullable();
+            $table->boolean('isFulfilled')->nullable();
         });
     }
 

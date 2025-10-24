@@ -50,6 +50,7 @@ class MatRequestsTable
                         'success' => 'approved',
                         'danger' => 'Rejected',
                         'warning' => 'Revision',
+                        
                         ])
                     ->formatStateUsing(fn ($state) => ucfirst($state)),
                 TextColumn::make('editor.name')

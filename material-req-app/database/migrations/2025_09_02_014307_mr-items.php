@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('satuan');
             $table->string('notes');
             $table->string('remainingQty');
-            $table->boolean('isUsed')->default(false);
         });
     }
 
