@@ -26,12 +26,13 @@ class PoItemsForm
                     ->relationship('matRequests', 'kodeRequest', function ($query) {
                         $query->whereHas('latestApproval', function ($q) {
                             $q->where('status', 'Approved');
-                        });
+                        })
+                    ->where('status', '!=', 'Closed');
                     })
                     ->searchable()
                     ->preload()
                     ->reactive()
-                    ->dehydrated(true) // ✅ wajib biar ikut submit
+                    ->dehydrated(true) // wajib biar ikut submit
                     ->afterStateHydrated(function ($state, $set, $get, $record) {
                         if ($record?->id) {
                             // set pilihan MR waktu edit
@@ -41,7 +42,7 @@ class PoItemsForm
                     ->afterStateUpdated(function ($state, $set, $get, $record) {
                         if (empty($state)) {
                             $set('items', []);
-                            // ✅ reset juga field detail kalau MR kosong
+                            // reset juga field detail kalau MR kosong
                             $set('companyName', null);
                             $set('officeAddress', null);
                             $set('contactName', null);
@@ -52,17 +53,23 @@ class PoItemsForm
                         $currentMR = $record?->matRequests->pluck('id')->sort()->values()->toArray() ?? [];
                         $newMR     = collect($state)->sort()->values()->toArray();
 
-                        // ✅ kalau MR sama → jangan regenerate items, biar harga & discount user aman
+                        // kalau MR sama → jangan regenerate items, biar harga & discount user aman
                         if ($currentMR === $newMR) return;
 
-                        // ✅ ambil items dari MR
+                        // ambil items dari MR
                         $items = MatRequestItems::whereIn('mr_id', $state)
                             ->get()
+                            ->filter(function ($item) {
+                             // skip item yang sudah habis (remainingQty = 0 atau kurang)
+                                return $item->remainingQty === null || $item->remainingQty > 0;
+                            })
                             ->map(function ($item) {
+                                $qty = $item->remainingQty ?? $item->Qty;
+
                                 return [
                                     'mr_item_id' => $item->id,
                                     'itemName'   => $item->itemName ?? '',
-                                    'qty'        => $item->Qty ?? 0,
+                                    'qty'        => $qty ?? 0,
                                     'unit'       => $item->satuan ?? $item->uom ?? '',
                                     'price'      => null,
                                     'amount'     => null,
@@ -75,7 +82,7 @@ class PoItemsForm
 
                         $set('items', $items);
 
-                        // ✅ set field detail (ambil MR pertama sebagai sumber)
+                        // set field detail (ambil MR pertama sebagai sumber)
                         if ($mr = \App\Models\MatRequest::with('requester')->find($state[0])) {
                             // ambil langsung dari MR
                             $set('officeAddress', $mr->address ?? '');
@@ -96,7 +103,7 @@ class PoItemsForm
                 ->schema([
                     Repeater::make('items')
                         ->relationship('items')
-                        ->dehydrated(true) // ✅ biar ikut ke DB
+                        ->dehydrated(true) // biar ikut ke DB
                         ->schema([
                             Hidden::make('mr_item_id'),
 

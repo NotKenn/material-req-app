@@ -38,7 +38,7 @@ class RecalculateMrQuantities extends Command
             $allFulfilled = $items->every(fn($i) => $i->remainingQty <= 0);
 
             $mr->isFulfilled = $allFulfilled;
-            $mr->status = $allFulfilled ? 'Closed' : 'Open';
+            $mr->status = $allFulfilled ? 'Closed' : 'Processed';
             $mr->save();
 
             $updatedCount++;

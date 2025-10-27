@@ -34,26 +34,29 @@ class AppServiceProvider extends ServiceProvider
         Event::listen(Login::class, function ($event) {
         $user = $event->user;
 
-        if (! $user->signature) {
-            // Toast notifikasi (langsung muncul)
-            Notification::make()
-                ->title('Signature Missing')
-                ->body('Please upload your signature.')
-                ->danger()
-                ->persistent() // biar ga auto ilang kalau mau
-                ->send();
+        if (!$user->signature) {
+            if($user->role !== 'Admin')
+            {
+                // Toast notifikasi (langsung muncul)
+                Notification::make()
+                    ->title('Signature Missing')
+                    ->body('Please upload your signature.')
+                    ->danger()
+                    ->persistent() // biar ga auto ilang kalau mau
+                    ->send();
 
-            // Database notifikasi (masuk bell)
-            Notification::make()
-                ->title('Signature Missing')
-                ->body('Please upload your signature to continue.')
-                ->danger()
-                ->actions([
-                    Action::make('Upload now')
-                        ->button()
-                        ->url('/app/signature-page'),
-                ])
-                ->sendToDatabase($user);
+                // Database notifikasi (masuk bell)
+                Notification::make()
+                    ->title('Signature Missing')
+                    ->body('Please upload your signature to continue.')
+                    ->danger()
+                    ->actions([
+                        Action::make('Upload now')
+                            ->button()
+                            ->url('/app/signature-page'),
+                    ])
+                    ->sendToDatabase($user);
+            }
         }
     });
     }

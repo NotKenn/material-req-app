@@ -29,7 +29,6 @@ class PoItemObserver
         $remaining = max(0, (float)$mrItem->Qty - (float)$totalUsed);
 
         $mrItem->remainingQty = $remaining;
-        $mrItem->isUsed = $remaining <= 0;
 
         $mrItem->saveQuietly(); // biar gak trigger observer lain
     }
