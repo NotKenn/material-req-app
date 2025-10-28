@@ -30,7 +30,7 @@ class MatRequestForm
                     ->dehydrated(true),
 
                 Select::make('requester_id')
-                    ->label('Penerima Barang')
+                    ->label('Pemilik MR')
                     ->relationship('requester', 'namaPT')
                     ->default(null)
                     ->createOptionForm([
@@ -52,6 +52,8 @@ class MatRequestForm
                             ->modalHeading('Create Penerima Barang');
                     })
                     ->required(),
+                Select::make('penerima_id')
+                    ->label('Penerima Barang'),
 
                 ToggleButtons::make('status')
                     ->label('Status')
@@ -84,15 +86,6 @@ class MatRequestForm
                     ->disabled(fn () => in_array(filament()->auth()->user()->role, ['User', 'MRSupervisor']))
                     ->directory('po-files')
                     ->default(null),
-                TextInput::make('address')
-                    ->label('Office Address')
-                    ->required(),
-                TextInput::make('name')
-                    ->label('Contact Name')
-                    ->required(),
-                TextInput::make('phone')
-                    ->label('Phone')
-                    ->required(),
                 TextInput::make('departemen')
                     ->label('Departemen')
                     ->required(),

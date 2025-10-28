@@ -23,7 +23,7 @@ class matRequest extends Model
         'edit_count',
         'last_edited_by'
     ];
-    
+
     public $timestamps = false;
 
     protected static function booted()
@@ -61,7 +61,11 @@ class matRequest extends Model
     {
         return $this->belongsTo(Requesters::class, 'requester_id');
     }
-    
+    public function penerima()
+    {
+        return $this->belongsTo(penerima::class, 'penerima_id');
+    }
+
     public function pos()
     {
         return $this->belongsToMany(

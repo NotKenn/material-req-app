@@ -14,19 +14,14 @@ return new class extends Migration
         Schema::create('mr_table', function (Blueprint $table) {
             $table->id();
             $table->string('kodeRequest');
-            $table->foreignId('requester_id')
-                  ->nullable()
-                  ->constrained('requesters')
-                  ->nullOnDelete();
+            $table->foreignId('requester_id')->nullable()->constrained('requesters')->nullOnDelete();
+            $table->foreignId('penerima_id')->nullable()->constrained('penerima')->nullOnDelete();
             $table->dateTime('created_at')->useCurrent();
             $table->dateTime('updated_at')->useCurrent()->useCurrentOnUpdate()->nullable();
             $table->unsignedInteger('edit_count')->default(0);
             $table->string('status')->default('New');
             $table->string('po_file')->nullable();
             $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
-            $table->string('address')->nullable();
-            $table->string('name')->nullable();
-            $table->string('phone')->nullable();
             $table->string('departemen')->nullable();
             $table->foreignId('last_edited_by')->nullable()->constrained('users')->nullOnDelete();
             $table->boolean('isFulfilled')->nullable();
