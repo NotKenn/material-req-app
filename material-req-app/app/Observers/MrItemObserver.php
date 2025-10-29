@@ -28,7 +28,7 @@ class MrItemObserver
         }
 
         // Cek apakah semua item sudah fulfilled
-        $allFulfilled = $items->every(fn ($i) => ($i->remainingQty ?? 0) <= 0);
+        $allFulfilled = $items->every(fn ($i) => isset($i->remainingQty) && $i->remainingQty <= 0);
 
         $this->updateMr($mrId, $allFulfilled);
     }

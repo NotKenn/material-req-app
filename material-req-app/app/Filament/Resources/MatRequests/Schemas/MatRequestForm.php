@@ -38,22 +38,39 @@ class MatRequestForm
                         ->label('Nama PT')
                         ->required(),
                         TextInput::make('alamatPT')
-                        ->label('Lokasi Delivery')
+                        ->label('Alamat PT')
                         ->required(),
                         TextInput::make('namaKontakPT')
-                        ->label('Penerima')
+                        ->label('Nama Kontak')
                         ->required(),
                         TextInput::make('noTelpKontakPT')
+                        ->label('Nomor Kontak')
+                        ->required(),
+                    ])
+                    ->createOptionAction(function (Action $action) {
+                        return $action
+                            ->modalHeading('Create Pemilik MR');
+                    })
+                    ->required(),
+                Select::make('penerima_id')
+                    ->label('Penerima Barang (Kosongkan Jika Penerima adalah Pemilik MR)')
+                    ->relationship('penerima', 'namaPenerima')
+                    ->default(null)
+                    ->createOptionForm([
+                        TextInput::make('namaPenerima')
+                        ->label('Nama Penerima')
+                        ->required(),
+                        TextInput::make('lokasiPengantaran')
+                        ->label('Lokasi Pengantaran')
+                        ->required(),
+                        TextInput::make('nomorKontak')
                         ->label('Kontak Penerima')
                         ->required(),
                     ])
                     ->createOptionAction(function (Action $action) {
                         return $action
                             ->modalHeading('Create Penerima Barang');
-                    })
-                    ->required(),
-                Select::make('penerima_id')
-                    ->label('Penerima Barang'),
+                    }),
 
                 ToggleButtons::make('status')
                     ->label('Status')

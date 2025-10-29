@@ -2,9 +2,12 @@
 
 namespace App\Providers;
 
+use App\Models\matRequest;
 use App\Models\matRequestItems;
+use App\Models\penerima;
 use App\Models\PoItems;
 use App\Observers\MrItemObserver;
+use App\Observers\penerimaObserver;
 use App\Observers\PoItemObserver;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
@@ -30,6 +33,7 @@ class AppServiceProvider extends ServiceProvider
 
         matRequestItems::observe(MrItemObserver::class);
         PoItems::observe(PoItemObserver::class);
+        matRequest::observe(penerimaObserver::class);
 
         Event::listen(Login::class, function ($event) {
         $user = $event->user;

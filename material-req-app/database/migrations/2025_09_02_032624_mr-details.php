@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreignId('mr_ids')->nullable()->constrained('mr_table')->nullOnDelete();
             $table->date('tanggal');
             $table->date('tanggalPerlu');
-            $table->string('lokasiPengantaran');
             $table->json('lampiran')->nullable();
             $table->string('notes')->nullable();
         });

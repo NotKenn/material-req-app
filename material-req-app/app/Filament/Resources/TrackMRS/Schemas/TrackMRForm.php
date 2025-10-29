@@ -53,13 +53,15 @@ class TrackMRForm
                             'Approved'   => 'Approved',
                             'Revision'   => 'Revision',
                             'Rejected'   => 'Rejected',
-                        ]) 
+                            'Closed'     => 'Closed',
+                        ])
                         ->colors([
                             'New'        => 'info',      // biru
                             'Processing' => 'warning', // kuning
                             'Approved'   => 'success', // hijau
                             'Revision'   => Color::Slate,
                             'Rejected'   => 'danger', // merah
+                            'Closed'     => Color::Teal,
                         ])
                         ->inline()
                         ->columnSpanFull()
@@ -76,7 +78,7 @@ class TrackMRForm
                 ->extraAttributes([
                     'style' => 'border-radius:0.5rem;width:100%',
                 ]),
-                
+
         ]);
     }
 }

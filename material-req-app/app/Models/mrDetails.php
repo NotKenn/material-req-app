@@ -13,8 +13,12 @@ class mrDetails extends Model
         'lokasiPengantaran',
         'lampiran',
         'notes',
-        
+
     ];
-    
+
+    protected $casts = [
+    'lampiran' => 'array',
+    ];
+
     public $timestamps = false;
 }

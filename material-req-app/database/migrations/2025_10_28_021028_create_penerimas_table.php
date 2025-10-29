@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('penerima', function (Blueprint $table) {
             $table->id();
-            $table->string('namaPenerima');
-            $table->string('nomorKontak');
-            $table->string('lokasiPengantaran');
+            $table->string('namaPenerima')->nullable();
+            $table->string('nomorKontak')->nullable();
+            $table->string('lokasiPengantaran')->nullable();
         });
     }
 

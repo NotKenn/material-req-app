@@ -20,7 +20,7 @@ class MRItemsForm
                         ->label('Items')
                         ->schema([
                             // Nama item full width ke sini klo mau
-                            
+
 
                             // Row bawah: Qty + Unit
                             Grid::make(4)
@@ -34,7 +34,7 @@ class MRItemsForm
                                         ->label('Quantity')
                                         ->required(),
                                     TextInput::make('satuan')
-                                        ->label('Unit')
+                                        ->label('Satuan')
                                         ->required(),
                                 ]),
                         ])

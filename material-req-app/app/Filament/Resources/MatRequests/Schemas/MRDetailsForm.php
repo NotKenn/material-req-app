@@ -29,10 +29,6 @@ class MRDetailsForm
                         ->label('Tanggal Perlu')
                         ->required(),
 
-                    TextInput::make('lokasiPengantaran')
-                        ->label('Lokasi Pengantaran')
-                        ->required(),
-
                     FileUpload::make('lampiran')
                         ->label('Lampiran')
                         ->multiple()
