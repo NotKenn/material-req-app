@@ -21,7 +21,7 @@ class penerimaObserver
             [
             'namaPenerima'      => $requester->namaKontakPT,
             'lokasiPengantaran' => $requester->alamatPT,
-            'nomorKontak'       => $requester->nomorTelpKontakPT,
+            'nomorKontak'       => $requester->noTelpKontakPT,
             ]
         );
 

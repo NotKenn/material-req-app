@@ -41,7 +41,7 @@ class PoDetailsForm
                             ->required(),
 
                         DatePicker::make('date')
-                            
+
                             ->required(),
 
                         TextInput::make('po_number')
@@ -69,11 +69,11 @@ class PoDetailsForm
                                 ->required(),
                             ])
                             ->required(),
-                                
+
                         TextInput::make('termOfPayment')
                             ->required(),
                         TextInput::make('gl_disc')
-                            ->label('Global Discount'),
+                            ->label('Global Discount (Kosongkan jika tidak ada)'),
                         Select::make('isRevised')
                         ->options([
                             'Yes'   => 'Yes',

@@ -85,9 +85,9 @@ class PoItemsForm
                         // set field detail (ambil MR pertama sebagai sumber)
                         if ($mr = \App\Models\MatRequest::with('requester')->find($state[0])) {
                             // ambil langsung dari MR
-                            $set('officeAddress', $mr->address ?? '');
-                            $set('contactName',  $mr->name ?? '');
-                            $set('phone',        $mr->phone ?? '');
+                            $set('officeAddress', $mr->requester->alamatPT ?? '');
+                            $set('contactName',  $mr->requester->namaKontakPT ?? '');
+                            $set('phone',        $mr->requester->noTelpKontakPT ?? '');
 
                             // ambil company dari relasi requester
                             $set('companyName', $mr->requester->namaPT ?? '');

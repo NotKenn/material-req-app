@@ -74,7 +74,7 @@ class PoDetailsTable
                             ->first()?->user?->name
                             ?? '-'
                     ),
-            ])
+            ])->defaultSort('created_at', 'desc')
             ->filters([
                 //
             ])

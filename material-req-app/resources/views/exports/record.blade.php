@@ -31,10 +31,10 @@
                 PURCHASE ORDER
             </div>
             @php
-                $revisi = $record->isRevised;
+                $revisi = $record?->isRevised;
                 $getMRCode = DB::table('mr_table')
                     ->join('po_mr', 'mr_table.id', '=', 'po_mr.mr_id')
-                    ->where('po_mr.po_id', $record->id)
+                    ->where('po_mr.po_id', $record?->id)
                     ->pluck('mr_table.kodeRequest');
             @endphp
             @if ($revisi === 'Yes')
@@ -120,11 +120,20 @@
     <table style="width:100%; border-collapse: collapse; margin-top:10px;">
     @php
         $vendor = \App\Models\vendor::where('id', $record->vendorID)->first();
+
         $getReqID = DB::table('mr_table')
                     ->join('po_mr', 'mr_table.id', '=', 'po_mr.mr_id')
                     ->where('po_mr.po_id', $record->id)
-                    ->pluck('mr_table.requester_id');
+                    ->pluck('mr_table.requester_id')
+                    ->first();
         $requesters = \App\Models\requesters::where('id', $getReqID)->first();
+
+        $getPenerimaID = DB::table('mr_table')
+                        ->join('po_mr', 'mr_table.id', '=', 'po_mr.mr_id')
+                        ->where('po_mr.po_id', $record->id)
+                        ->pluck('mr_table.penerima_id')
+                        ->first();
+        $penerima = \App\Models\penerima::where('id', $getPenerimaID)->first();
     @endphp
         <tr>
             <!-- Kolom kiri -->
@@ -185,21 +194,21 @@
                         <td style="border:1px solid #000; padding:6px;">
                             <span style="display:inline-block; width:120px;vertical-align:middle;">Address</span>
                             <span style="display:inline-block;vertical-align:middle;">:</span>
-                            <span style="display:inline-block;vertical-align:middle;"> {{ $requesters->alamatPT }}</span>
+                            <span style="display:inline-block;vertical-align:middle;"> {{ $penerima->lokasiPengantaran }}</span>
                         </td>
                     </tr>
                     <tr>
                         <td style="border:1px solid #000; padding:6px;">
                             <span style="display:inline-block; width:120px;vertical-align:middle;">Contact</span>
                             <span style="display:inline-block;vertical-align:middle;">:</span>
-                            <span style="display:inline-block;vertical-align:middle;"> {{ $requesters->namaKontakPT }}</span>
+                            <span style="display:inline-block;vertical-align:middle;"> {{ $penerima->namaPenerima }}</span>
                         </td>
                     </tr>
                     <tr>
                         <td style="border:1px solid #000; padding:6px;">
                             <span style="display:inline-block; width:120px;vertical-align:middle;">Phone</span>
                             <span style="display:inline-block;vertical-align:middle;">:</span>
-                            <span style="display:inline-block;vertical-align:middle;"> {{ $requesters->noTelpKontakPT }}</span>
+                            <span style="display:inline-block;vertical-align:middle;"> {{ $penerima->nomorKontak }}</span>
                         </td>
                     </tr>
                 </table>

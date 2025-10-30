@@ -144,7 +144,7 @@
 
     <table style="width: 100%; margin-top: 40px; text-align: center; border: none;">
     @php
-        $creator = DB::table('users')->where('id', $record->user_id)->first();
+        $creator = DB::table('users')->where('id', $record?->user_id)->first();
         $creatorSignature = $creator?->signature
             ? storage_path('app/public/'.$creator->signature)
             : null;
@@ -154,7 +154,7 @@
                     ->latest('approved_at')
                     ->first();
 
-        $supervisor = DB::table('users')->where('id', $approvals->user_id)->first();
+        $supervisor = DB::table('users')->where('id', $approvals?->user_id)->first();
         $supervisorSignature = $supervisor?->signature
             ? storage_path('app/public/'.$supervisor->signature)
             : null;
@@ -172,13 +172,13 @@
             Pemohon Ybs,<br><br>
             <img style="height:120px;width:150px" src={{ $creatorSignature }}> </img><br>
             Nama :<b><u>{{ $creator?->name }}</u></b> <br>
-            <u>{{ $record->created_at }}</u>
+            <u>{{ $record?->created_at }}</u>
         </td>
         <td style="width: 33%; border: none;text-align: center">
             Disetujui Atasan,<br><br>
             <img style="height:120px;width:150px" src={{ $supervisorSignature }}> </img><br>
            Nama :<b><u>{{ $supervisor?->name}}</u></b> <br>
-            <u> {{ $approvals->approved_at }} </u>
+            <u> {{ $approvals?->approved_at }} </u>
         </td>
         <td style="width: 33%; border: none;text-align: center">
             Diproses,<br><br>
@@ -192,7 +192,7 @@
 @php
     $details = \App\Models\mrDetails::where('mr_ids', $record->id)->first();
     $attachments = $details && $details->lampiran
-        ? json_decode($details->lampiran, true)
+        ? json_decode($details?->lampiran, true)
         : [];
 @endphp
 
@@ -216,9 +216,9 @@
                     style="max-width: 90%; max-height: 600px; object-fit: contain;"
                 >
             @elseif ($extension === 'pdf')
-                <p>📄 File PDF: {{ basename($filePath) }}</p>
+                <p>File PDF: {{ basename($filePath) }}</p>
             @else
-                <p>📄 File: {{ basename($path) }}</p>
+                <p>File: {{ basename($path) }}</p>
             @endif
         </div>
     @endforeach
