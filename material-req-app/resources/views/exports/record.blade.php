@@ -399,7 +399,7 @@
                 <!-- tanda tangan acknowledged -->
                 <img style="height:80px;width:100px" src={{ $supervisorSignature }}> </img><br>
                 <div style="height:20px;"></div>
-                Purchasing Manager
+                <b><u>{{ $supervisor?->name }}</u><b>
             </td>
         </tr>
     </table>

@@ -14,7 +14,7 @@ class EditPoDetails extends EditRecord
     {
         return $this->getResource()::getUrl('index');
     }
-    
+
     protected function getHeaderActions(): array
     {
         return [
@@ -32,17 +32,17 @@ class EditPoDetails extends EditRecord
             ]);
         }
     }
-    
+
     // protected function afterSave(): void
     // {
     //     $po = $this->record;
-        
+
     //     $matRequests = $this->form->getState()['matRequests'] ?? [];
-        
+
     //     // ✅ hanya sync kalau user memang ada pilihan MR
     //     if (!empty($matRequests)) {
     //         $po->matRequests()->sync($matRequests);
-            
+
     //         $items = [];
     //         foreach ($matRequests as $mrId) {
     //             $mrItems = \App\Models\MatRequestItems::where('mr_id', $mrId)->get();

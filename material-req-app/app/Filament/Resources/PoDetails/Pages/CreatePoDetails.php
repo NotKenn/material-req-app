@@ -27,8 +27,10 @@ class CreatePoDetails extends CreateRecord
         foreach ($po->matRequests as $mr) {
             $mr->update(['status' => 'Processed']);
         }
+        $this->record->user_id = filament()->auth()->user()->id;
+        $this->record->save();
     }
-    
+
     // protected function afterSave(): void
     // {
     //     $po = $this->record;

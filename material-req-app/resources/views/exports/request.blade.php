@@ -161,6 +161,7 @@
 
             // buat check null, klo null kosongin aja
         $getPO = DB::table('po_mr')->where('mr_id', $record?->id)->first();
+        $getPOTime = \App\Models\PoDetails::where('id', $getPO?->po_id)->first();
         $getPOuser = \App\Models\PoDetails::where('id', $getPO?->po_id)->first();
         $getUserID = \App\Models\User::where('id',$getPOuser?->user_id)->first();
         $getSign = $getUserID?->signature
@@ -183,8 +184,8 @@
         <td style="width: 33%; border: none;text-align: center">
             Diproses,<br><br>
             <img style="height:120px;width:150px" src={{ $getSign }}> </img><br>
-            Nama : <b><u>{{$getUserID?->name}}</u></b>
-            {{-- add po date from po stuff here --}}
+            Nama : <b><u>{{$getUserID?->name}}</u></b> <br>
+            <u>{{ $getPOTime->created_at }} </u>
         </td>
     </tr>
 </table>
