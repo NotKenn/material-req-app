@@ -5,6 +5,7 @@ namespace App\Filament\Resources\MatRequests\Schemas;
 use App\Models\lastNumbers;
 use App\Models\mrDetails;
 use App\Models\matRequest;
+use App\Models\penerima;
 use App\Models\requesters;
 use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
@@ -52,25 +53,43 @@ class MatRequestForm
                             ->modalHeading('Create Pemilik MR');
                     })
                     ->required(),
-                Select::make('penerima_id')
-                    ->label('Penerima Barang (Kosongkan Jika Penerima adalah Pemilik MR)')
-                    ->relationship('penerima', 'namaPenerima')
-                    ->default(null)
-                    ->createOptionForm([
-                        TextInput::make('namaPenerima')
-                        ->label('Nama Penerima')
-                        ->required(),
-                        TextInput::make('lokasiPengantaran')
-                        ->label('Lokasi Pengantaran')
-                        ->required(),
-                        TextInput::make('nomorKontak')
-                        ->label('Kontak Penerima')
-                        ->required(),
-                    ])
-                    ->createOptionAction(function (Action $action) {
-                        return $action
-                            ->modalHeading('Create Penerima Barang');
-                    }),
+
+                    Select::make('penerima_id')
+                        ->label('Penerima Barang (Kosongkan Jika Penerima adalah Pemilik MR)')
+                        ->relationship('penerima', 'namaPenerima')
+                        ->default(null)
+
+                        // FORM UNTUK TAMBAH BARU
+                        ->createOptionForm([
+                            TextInput::make('namaPenerima')
+                                ->label('Nama Penerima')
+                                ->required(),
+                            TextInput::make('lokasiPengantaran')
+                                ->label('Lokasi Pengantaran')
+                                ->required(),
+                            TextInput::make('nomorKontak')
+                                ->label('Kontak Penerima')
+                                ->required(),
+                        ])
+                        ->createOptionAction(function (Action $action) {
+                            return $action->modalHeading('Tambah Penerima Barang');
+                        })
+
+                        // FORM UNTUK EDIT DATA YANG ADA
+                        ->editOptionForm([
+                            TextInput::make('namaPenerima')
+                                ->label('Nama Penerima')
+                                ->required(),
+                            TextInput::make('lokasiPengantaran')
+                                ->label('Lokasi Pengantaran')
+                                ->required(),
+                            TextInput::make('nomorKontak')
+                                ->label('Kontak Penerima')
+                                ->required(),
+                        ])
+                        ->editOptionAction(function (Action $action) {
+                            return $action->modalHeading('Edit Penerima Barang');
+                        }),
 
                 ToggleButtons::make('status')
                     ->label('Status')
