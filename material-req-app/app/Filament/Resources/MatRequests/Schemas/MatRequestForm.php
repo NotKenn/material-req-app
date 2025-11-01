@@ -8,13 +8,16 @@ use App\Models\matRequest;
 use App\Models\penerima;
 use App\Models\requesters;
 use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Forms\Components\FileUpload;
 use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ToggleButtons;
+use Filament\Notifications\Notification;
 use Filament\Schemas\Schema;
 use Filament\Support\Colors\Color;
+use Filament\Support\Enums\Alignment;
 
 class MatRequestForm
 {
@@ -88,7 +91,33 @@ class MatRequestForm
                                 ->required(),
                         ])
                         ->editOptionAction(function (Action $action) {
-                            return $action->modalHeading('Edit Penerima Barang');
+                            return $action
+                                ->modalHeading('Edit Penerima Barang')
+                                ->modalWidth('md')
+                                // ->modalFooterActionsAlignment(Alignment::Right)
+                            // Tambahkan tombol Delete di footer modal edit
+                                ->extraModalFooterActions([
+                                    ActionGroup::make([
+                                        Action::make('save')->submit('editOptionForm'),
+                                        Action::make('cancel')->close(),
+                                    ]),
+                                    Action::make('deletePenerima')
+                                        ->label('Hapus')
+                                        ->color('danger')
+                                        ->icon('heroicon-o-trash')
+                                        ->requiresConfirmation()
+                                        ->action(function ($arguments, $record, $get, $set) {
+                                            if ($record) {
+                                                $record->delete();
+                                                $set('penerima_id', null);
+
+                                                Notification::make()
+                                                    ->title('Penerima dihapus.')
+                                                    ->success()
+                                                    ->send();
+                                            }
+                                        }),
+                                ]);
                         }),
 
                 ToggleButtons::make('status')
