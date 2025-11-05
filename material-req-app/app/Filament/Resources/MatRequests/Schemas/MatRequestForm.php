@@ -37,6 +37,7 @@ class MatRequestForm
                     ->label('Pemilik MR')
                     ->relationship('requester', 'namaPT')
                     ->default(null)
+
                     ->createOptionForm([
                         TextInput::make('namaPT')
                         ->label('Nama PT')
@@ -61,7 +62,44 @@ class MatRequestForm
                         ->label('Penerima Barang (Kosongkan Jika Penerima adalah Pemilik MR)')
                         ->relationship('penerima', 'namaPenerima')
                         ->default(null)
+                        ->suffixActions([
+                        Action::make('testDelete')
+                            ->label('Del')
+                            ->icon('heroicon-o-trash')
+                            ->color('danger')
+                            ->requiresConfirmation()
+                            ->modalHeading('Delete?')
+                            ->modalDescription('Press Confirm to Delete')
+                            ->action(function ($state, callable $set) {
+                                if (! $state) {
+                                    Notification::make()
+                                        ->title('Tidak ada data dipilih')
+                                        ->warning()
+                                        ->send();
+                                    return;
+                                }
 
+                                $model = \App\Models\Penerima::find($state);
+
+                                if (! $model) {
+                                    Notification::make()
+                                        ->title('Data tidak ditemukan')
+                                        ->danger()
+                                        ->send();
+                                    return;
+                                }
+
+                                $model->delete();
+
+                                // Reset dropdown ke null setelah delete
+                                $set('penerima_id', null);
+
+                                Notification::make()
+                                    ->title('Penerima berhasil dihapus!')
+                                    ->success()
+                                    ->send();
+                            })
+                        ])
                         // FORM UNTUK TAMBAH BARU
                         ->createOptionForm([
                             TextInput::make('namaPenerima')
@@ -90,35 +128,8 @@ class MatRequestForm
                                 ->label('Kontak Penerima')
                                 ->required(),
                         ])
-                        ->editOptionAction(function (Action $action) {
-                            return $action
-                                ->modalHeading('Edit Penerima Barang')
-                                ->modalWidth('md')
-                                // ->modalFooterActionsAlignment(Alignment::Right)
-                            // Tambahkan tombol Delete di footer modal edit
-                                ->extraModalFooterActions([
-                                    ActionGroup::make([
-                                        Action::make('save')->submit('editOptionForm'),
-                                        Action::make('cancel')->close(),
-                                    ]),
-                                    Action::make('deletePenerima')
-                                        ->label('Hapus')
-                                        ->color('danger')
-                                        ->icon('heroicon-o-trash')
-                                        ->requiresConfirmation()
-                                        ->action(function ($arguments, $record, $get, $set) {
-                                            if ($record) {
-                                                $record->delete();
-                                                $set('penerima_id', null);
-
-                                                Notification::make()
-                                                    ->title('Penerima dihapus.')
-                                                    ->success()
-                                                    ->send();
-                                            }
-                                        }),
-                                ]);
-                        }),
+                        ->editOptionAction(fn (Action $action) => $action->modalHeading('Edit Penerima Barang')->modalWidth('md')
+                    ),
 
                 ToggleButtons::make('status')
                     ->label('Status')

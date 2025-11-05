@@ -335,7 +335,7 @@
     <tr>
         <td style="width:62.5%; vertical-align:top; padding:5px;font-size:11px;">
             <b>REMARKS:</b><br>
-            * Pembayaran akan dilakukan oleh nama PT yang tertera di Company Name <br>
+            * Pembayaran akan dilakukan oleh nama PT yang tertera di "Company Name" yang tertera dibagian atas <br>
             * Setiap pengantaran barang mohon dilampirkan PO, jika tidak melampirkan PO maka barang tersebut dikembalikan oleh penerima barang <br>
             * Pada sangat pengantaran WAJIB mencantumkan kuantiti barang di Delivery Order dalam satuan sesuai PO. <br>
             * Yang berwenang menerima barang HANYA nama yang tertera diatas kolom Delivery To.

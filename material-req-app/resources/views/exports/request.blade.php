@@ -41,6 +41,12 @@
             // ->value('requesters.namaPT'); // langsung value kalau cuma satu
 
         $details = \App\Models\mrDetails::where('mr_ids', $record->id)->first();
+        $getPenerimaID = DB::table('mr_table')
+                        ->where('id', $record->id)
+                        ->pluck('penerima_id')
+                        ->first();
+        $penerima = \App\Models\penerima::where('id', $getPenerimaID)->first();
+
     @endphp
     </table>
     <br>
@@ -85,7 +91,7 @@
                         <td style="border:none; padding:4px;">
                             <span style="display:inline-block; width:175px;vertical-align:middle;">Lokasi Pengantaran</span>
                             <span style="display:inline-block;vertical-align:middle;">:</span>
-                            <span style="display:inline-block;vertical-align:middle;"> {{ $details->lokasiPengantaran }} </span>
+                            <span style="display:inline-block;vertical-align:middle;"> {{ $penerima->lokasiPengantaran }} </span>
                         </td>
                     </tr>
                     <tr>
@@ -184,7 +190,7 @@
             Diproses,<br><br>
             <img style="height:120px;width:150px" src={{ $getSign }}> </img><br>
             Nama : <b><u>{{$getUserID?->name}}</u></b> <br>
-            <u>{{ $getPOUser?->created_at }} </u>
+            <u>{{ $getPOuser?->created_at }} </u>
         </td>
     </tr>
 </table>
