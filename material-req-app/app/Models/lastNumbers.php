@@ -14,28 +14,48 @@ class lastNumbers extends Model
         'type',
         'lastNumbers',
     ];
-    
-    public static function generate(string $type): int
+
+    public static function generate(string $type)
     {
         return DB::transaction(function () use ($type) {
+            $current_period = now()->format('Y-m');
+
             $record = static::lockForUpdate()->firstOrCreate(
                 ['type' => $type],
                 ['lastNumbers' => 0]
             );
-
-            $record->lastNumbers++;
+            if($record->last_reset_period !== $current_period){
+                $record->lastNumbers = 1;
+                $record->last_reset_period = $current_period;
+            }else
+            {
+                $record->lastNumbers++;
+            }
             $record->save();
 
-            return $record->lastNumbers;
+            $getMonth= now()->month;
+            $getYear = now()->year;
+
+            $finalCode = "$record->lastNumbers"."/"."$record->type"."/"."$getMonth"."/"."$getYear";
+            return $finalCode;
         });
     }
-    public static function peek(string $type): int
+    public static function peek(string $type)
     {
+        $current_period = now()->format('Y-m');
+
         $record = static::firstOrCreate(
             ['type' => $type],
             ['lastNumbers' => 0]
         );
 
-        return $record->lastNumbers + 1; // cuma lihat next number, tidak save
+        $getMonth= now()->month;
+        $getYear = now()->year;
+        $nextNumber = $record->last_reset_period !== $current_period
+        ? 1
+        : $record->lastNumbers + 1;
+        $finalCode = "$nextNumber"."/"."$record->type"."/"."$getMonth"."/"."$getYear";
+
+        return $finalCode; // cuma lihat next number, tidak save
     }
 }

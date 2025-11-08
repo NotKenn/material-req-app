@@ -6,6 +6,7 @@ use App\Models\MatRequestItems;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -112,11 +113,16 @@ class PoItemsForm
                                 ->dehydrated(),
 
                             TextInput::make('qty')
-                                ->numeric()
-                                ->dehydrated(),
+                            ->numeric()
+                            ->dehydrated(),
 
                             TextInput::make('unit')
-                                ->dehydrated(),
+                            ->dehydrated(),
+
+                            Textarea::make('note')
+                                ->label('Keterangan')
+                                ->rows(1)
+                                ->autosize(),
 
                             TextInput::make('price')
                                 ->label('Harga / Satuan')
@@ -144,9 +150,6 @@ class PoItemsForm
                                     $set('total', max($amount - $discountValue, 0));
                                 })
                                 ->dehydrateStateUsing(fn($state) => preg_replace('/[^0-9]/', '', (string) $state)),
-
-                            TextInput::make('note')
-                                ->label('Keterangan'),
 
                             TextInput::make('amount')
                                 ->label('Jumlah')

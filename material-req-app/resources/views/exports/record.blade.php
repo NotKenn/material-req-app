@@ -336,10 +336,10 @@
         <td style="width:62.5%; vertical-align:top; padding:5px;font-size:11px;">
             <b>REMARKS:</b><br>
             * Pembayaran akan dilakukan oleh nama PT yang tertera di "Company Name" yang tertera dibagian atas <br>
-            * Setiap pengantaran barang mohon dilampirkan PO, jika tidak melampirkan PO maka barang tersebut dikembalikan oleh penerima barang <br>
-            * Pada sangat pengantaran WAJIB mencantumkan kuantiti barang di Delivery Order dalam satuan sesuai PO. <br>
-            * Yang berwenang menerima barang HANYA nama yang tertera diatas kolom Delivery To.
-            Sebelum pengantaran mohon hubungi kepada pihak yang berwenang terlebih dahulu <br>
+            * Setiap Delivery Order wajib dilampirkan PO, jika tidak melampirkan PO maka barang harus dikembalikan <br>
+            * Pada saat pengantaran wajib mencantumkan kuantiti barang di Delivery Order yang sesuai dengan PO. <br>
+            * Yang berwenang menerima barang hanya nama yang tertera diatas kolom Deliver To. <br><br>
+            Sebelum pengantaran mohon hubungi contact person penerima terlebih dahulu <br>
         </td>
         <td style="width:36.5%; padding:5px; max-width:36.5%">
             <table style="width:100%; border-collapse: collapse;" border="1">
@@ -375,6 +375,9 @@
             $supervisorSignature = $supervisor?->signature
                 ? storage_path('app/public/'.$supervisor?->signature)
                 : null;
+
+            // $getMonth= now()->month;
+            // $getYear = now()->year;
         @endphp
         <tr>
             <td style="width: 62.5%; border:none; vertical-align: top;">
@@ -394,15 +397,20 @@
                 <img style="height:80px;width:100px" src={{ $creatorSignature }}> </img><br>
                 <div style="height:20px;"></div>
                 <b><u>{{ auth()->user()->name }}</u></b>
+                {{-- {{ $getMonth }}
+                {{ $getYear }} --}}
             </td>
             <td style="text-align: center; vertical-align: bottom; border:1px solid black;">
                 <!-- tanda tangan acknowledged -->
                 <img style="height:80px;width:100px" src={{ $supervisorSignature }}> </img><br>
                 <div style="height:20px;"></div>
                 <b><u>{{ $supervisor?->name }}</u><b>
-            </td>
-        </tr>
-    </table>
+                </td>
+            </tr>
+        </table>
+        <u style = "float:right">{{ \Carbon\Carbon::parse($record->created_at)->format('l, d/m/Y') }}</u>
+
+
 
         {{-- <div style="display: flex; gap: 10px; background: #eee; padding: 10px;">
             <!-- Kolom 1 -->
