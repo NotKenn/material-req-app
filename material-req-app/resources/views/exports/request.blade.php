@@ -20,14 +20,14 @@
 
         <<!-- Judul Tengah -->
         <td style="width:33%; text-align:center; vertical-align:top;border:none; padding:5px">
-            <div style="font-size:24px; font-weight:bold;">
+            <div style="font-size:22px; font-weight:bold;">
                 Material Request
             </div>
         </td>
 
         <!-- Judul kanan -->
         <td style="width:33%; text-align:center; vertical-align:top;border:none; padding:5px">
-            <div style="font-size:18px; font-weight:bold;">
+            <div style="font-size:16px; font-weight:bold;">
                 MR No. : {{ $record->kodeRequest }}
 
             </div>

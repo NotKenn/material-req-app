@@ -140,7 +140,7 @@ class PoDetailsTable
                 ->visible(fn ($record) =>
                 $record->approvals()->latest('approved_at')->value('status') === 'Approved'
                 )
-                ->url(fn ($record) => route('mr.preview.pdf', $record))
+                ->url(fn ($record) => route('po.preview.pdf', $record))
                 ->openUrlInNewTab(),
                 // ->action(function ($record) {
                 //     $pdf = Pdf::loadView('exports.record', [
