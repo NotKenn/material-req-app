@@ -24,7 +24,7 @@ class EnsureHasSignature
         }
 
         // Kalau user belum punya signature dan bukan sedang di halaman signature
-        if (!$user->signature && !$request->is('app/signature-page*', 'app', 'logout')) {
+        if (!$user->signature && !$request->is('app/signature-page*', 'app', 'app/logout')) {
             Notification::make()
                 ->title('Signature Required')
                 ->body('Silakan upload tanda tangan dulu sebelum lanjut.')
