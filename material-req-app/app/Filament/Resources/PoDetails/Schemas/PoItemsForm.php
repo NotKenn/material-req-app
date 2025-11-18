@@ -27,8 +27,8 @@ class PoItemsForm
                     ->relationship('matRequests', 'kodeRequest', function ($query) {
                         $query->whereHas('latestApproval', function ($q) {
                             $q->where('status', 'Approved');
-                        })
-                    ->where('status', '!=', 'Closed');
+                        });
+                    // ->where('status', '!=', 'Closed');
                     })
                     ->searchable()
                     ->preload()
@@ -60,17 +60,17 @@ class PoItemsForm
                         // ambil items dari MR
                         $items = MatRequestItems::whereIn('mr_id', $state)
                             ->get()
-                            ->filter(function ($item) {
-                             // skip item yang sudah habis (remainingQty = 0 atau kurang)
-                                return $item->remainingQty === null || $item->remainingQty > 0;
-                            })
+                            // ->filter(function ($item) {
+                            //  // skip item yang sudah habis (remainingQty = 0 atau kurang)
+                            //     // return $item->remainingQty === null || $item->remainingQty > 0;
+                            // })
                             ->map(function ($item) {
-                                $qty = $item->remainingQty ?? $item->Qty;
+                                // $qty = $item->remainingQty ?? $item->Qty;
 
                                 return [
                                     'mr_item_id' => $item->id,
                                     'itemName'   => $item->itemName ?? '',
-                                    'qty'        => $qty ?? 0,
+                                    'qty'        => $item->Qty ?? 0,
                                     'unit'       => $item->satuan ?? $item->uom ?? '',
                                     'price'      => null,
                                     'amount'     => null,

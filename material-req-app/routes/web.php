@@ -158,7 +158,7 @@ Route::get('/po/{record}/pdf', function ($id) {
     for ($i = 1; $i <= $pageCount; $i++) {
         $template = $finalPdf->importPage($i);
         $size = $finalPdf->getTemplateSize($template);
-        $finalPdf->AddPage($size['orientation']== 'L' ? 'L' : 'P', [$size['width'], $size['height']]);
+        $finalPdf->AddPage($size['orientation']== 'P' ? 'P' : 'P', [$size['width'], $size['height']]);
         $finalPdf->useTemplate($template);
     }
 
@@ -167,8 +167,10 @@ Route::get('/po/{record}/pdf', function ($id) {
 
     unlink($tempMergedPath);
 
+    $poPdfTitle = str_replace('/','-',$poNumber);
+
     return response(
-        $finalPdf->Output('S'),
+        $finalPdf->Output("File-{$poPdfTitle}.pdf"),
         200,
         [
             'Content-Type' => 'application/pdf',

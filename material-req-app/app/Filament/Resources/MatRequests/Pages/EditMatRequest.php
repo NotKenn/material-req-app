@@ -19,10 +19,12 @@ class EditMatRequest extends EditRecord
     protected function afterSave(): void
     {
         $userId = filament()->auth()->user()->id;
+        $editCount = $this->record->edit_count;
 
         // Update last_edited_by
         $this->record->updateQuietly([
             'last_edited_by' => $userId,
+            'edit_count' => $editCount + 1,
         ]);
 
         $approval = $this->record->approvals()->latest('approved_at')->first();
@@ -34,7 +36,7 @@ class EditMatRequest extends EditRecord
             ]);
         }
     }
-    
+
     protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');

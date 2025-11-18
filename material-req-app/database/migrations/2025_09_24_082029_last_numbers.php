@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('type');
             $table->string('lastNumbers');
-            $table->string('last_reset_period');
+            $table->string('last_reset_period')->nullable();
             $table->timestamps();
         });
     }

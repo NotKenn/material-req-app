@@ -12,7 +12,7 @@ class CreateMatRequest extends CreateRecord
     protected static string $resource = MatRequestResource::class;
 
     protected static ?string $title = 'Create Material Request';
-    
+
     protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');
@@ -22,11 +22,11 @@ class CreateMatRequest extends CreateRecord
         // akses record yang baru dibuat
         $this->record->user_id = filament()->auth()->user()->id;
         $this->record->save();
-    } 
+    }
     public function mutateFormDataBeforeCreate(array $data): array
     {
         $data['kodeRequest'] = lastNumbers::generate('MR');
-
+         $data['user_id'] = filament()->auth()->user()->id;
         return $data;
     }
 

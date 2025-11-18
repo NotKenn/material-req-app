@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('Qty');
             $table->string('satuan');
             $table->string('notes');
-            $table->string('remainingQty');
+            $table->string('remainingQty')->nullable();
         });
     }
 
