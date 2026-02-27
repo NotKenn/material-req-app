@@ -58,5 +58,4 @@ class lastNumbers extends Model
 
         return $finalCode; // cuma lihat next number, tidak save
     }
-}
-
+};
