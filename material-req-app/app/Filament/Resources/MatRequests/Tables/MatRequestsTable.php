@@ -50,7 +50,7 @@ class MatRequestsTable
                         'success' => 'approved',
                         'danger' => 'Rejected',
                         'warning' => 'Revision',
-                        
+
                         ])
                     ->formatStateUsing(fn ($state) => ucfirst($state)),
                 TextColumn::make('editor.name')
@@ -79,7 +79,7 @@ class MatRequestsTable
                 ->query(function ($query) {
                 $user = filament()->auth()->user();
 
-                if ($user && $user->role === 'User') {
+                if ($user && $user->role === 'Requester') {
                     return $query->where('user_id', $user->id);
                 }
                     return $query; // biarkan tanpa filter kalau bukan role User
@@ -88,13 +88,13 @@ class MatRequestsTable
                 $user = filament()->auth()->user();
 
                 // Kalau User → aktif by default
-                return $user && $user->role === 'User';
+                return $user && $user->role === 'Requester';
                 })
                 ->visible(function () {
                     $user = filament()->auth()->user();
 
                     // Kalau Admin / Purchasing → sembunyikan filternya
-                    return $user && $user->role === 'User';
+                    return $user && $user->role === 'Requester';
                 }),
             ])
             ->recordActions([
@@ -112,8 +112,8 @@ class MatRequestsTable
                     ->modalHeading('Approve this Request?')
                     ->modalDescription('Press Confirm to Approve')
                     ->tooltip('Approve this request')
-                    ->hidden(fn () => in_array(filament()->auth()->user()->role, ['User']))
-                    ->disabled(fn () => in_array(filament()->auth()->user()->role, ['User']))
+                    ->hidden(fn () => in_array(filament()->auth()->user()->role, ['Requester']))
+                    ->disabled(fn () => in_array(filament()->auth()->user()->role, ['Requester']))
                     ->action(fn ($record) => $record->approvals()->create([
                         'user_id' => filament()->auth()->user()->id,
                         'status' => 'Approved',
@@ -138,8 +138,8 @@ class MatRequestsTable
                     ->requiresConfirmation()
                     ->modalHeading('Reject this Request?')
                     ->modalDescription('Press Confirm to Reject')
-                    ->hidden(fn () => in_array(filament()->auth()->user()->role, ['User']))
-                    ->disabled(fn () => in_array(filament()->auth()->user()->role, ['User']))
+                    ->hidden(fn () => in_array(filament()->auth()->user()->role, ['Requester']))
+                    ->disabled(fn () => in_array(filament()->auth()->user()->role, ['Requester']))
                     ->tooltip('Reject this request')
                     ->action(fn ($record) => $record->approvals()->create([
                         'user_id' => filament()->auth()->user()->id,
@@ -180,8 +180,8 @@ class MatRequestsTable
 
                 // }),
                 ViewAction::make()
-                ->hidden(fn () => in_array(filament()->auth()->user()->role, ['User']))
-                ->disabled(fn () => in_array(filament()->auth()->user()->role, ['User'])),
+                // ->hidden(fn () => in_array(filament()->auth()->user()->role, ['Requester']))
+                // ->disabled(fn () => in_array(filament()->auth()->user()->role, ['Requester'])),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('status')->nullable();
             // $table->unsignedInteger('level')->default(1); // kalau multi level approval enable, gitu lh
             $table->timestamp('approved_at')->nullable();
+            $table->string('reject_note')->nullable();
         });
     }
 

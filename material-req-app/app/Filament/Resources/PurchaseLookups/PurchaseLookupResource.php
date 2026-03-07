@@ -31,12 +31,12 @@ class PurchaseLookupResource extends Resource
 
     protected static ?string $navigationLabel = 'Purchase Lookup';
 
-    protected static ?string $recordTitleAttribute = 'Purchase Lookup';    
+    protected static ?string $recordTitleAttribute = 'Purchase Lookup';
 
     protected static string|UnitEnum|null $navigationGroup = 'Purchasing';
 
     protected static ?int $navigationSort = 3; // biar urutannya jelas
-    
+
     public static function getPluralLabel(): string
     {
         return 'Purchase Lookups';
@@ -49,13 +49,13 @@ class PurchaseLookupResource extends Resource
     public static function shouldRegisterNavigation(): bool
     {
         $user = filament()->auth()->user();
-        return $user && in_array($user->role, ['Admin','Purchasing','POSupervisor']);
+        return $user && in_array($user->role, ['Admin','Purchasing','ApproverPO']);
     }
 
     public static function canViewAny(): bool
     {
         $user = filament()->auth()->user();
-        return $user && in_array($user->role, ['Admin','Purchasing','POSupervisor']);
+        return $user && in_array($user->role, ['Admin','Purchasing','ApproverPO']);
     }
 
     public static function form(Schema $schema): Schema
@@ -83,7 +83,7 @@ class PurchaseLookupResource extends Resource
             TextColumn::make('vendorName')->label('Vendor')->searchable(),
             TextColumn::make('po_number')->label('PO Number')
             ->color(Color::Sky)
-            ->url(fn ($record) => $record->po_number 
+            ->url(fn ($record) => $record->po_number
             ? route('filament.admin.resources.po-details.view',
                 PoDetails::where('id', $record->po_number)->value('id')
             )

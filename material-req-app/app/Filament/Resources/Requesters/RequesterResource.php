@@ -22,7 +22,7 @@ class RequesterResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserGroup;
 
     protected static ?string $recordTitleAttribute = 'Requester';
-        
+
     protected static string|UnitEnum|null $navigationGroup = 'Material Request';
 
     protected static ?int $navigationSort = 2; // biar urutannya jelas
@@ -30,14 +30,14 @@ class RequesterResource extends Resource
     public static function shouldRegisterNavigation(): bool
     {
         $user = filament()->auth()->user();
-        return $user && in_array($user->role, ['Admin','User','MRSupervisor']);
+        return $user && in_array($user->role, ['Admin','Requester','ApproverMR']);
 
     }
 
     public static function canViewAny(): bool
     {
         $user = filament()->auth()->user();
-        return $user && in_array($user->role, ['Admin','User','MRSupervisor']);
+        return $user && in_array($user->role, ['Admin','Requester','ApproverMR']);
 
     }
 

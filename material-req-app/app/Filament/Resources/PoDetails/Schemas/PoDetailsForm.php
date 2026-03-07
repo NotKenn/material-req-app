@@ -7,6 +7,7 @@ use App\Models\matRequest;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -80,7 +81,19 @@ class PoDetailsForm
                             'No'    => 'No'
                         ])
                         ->label('Revisi'),
-                    ])
+                        Textarea::make('remarks')
+                        ->label('Remarks')
+                        ->rows(10)
+                        ->columns(1)
+                        ->columnSpanFull()
+                        ->default('*Pembayaran akan dilakukan oleh nama PT yang tertera di "Company Name" yang tertera dibagian atas
+* Setiap Delivery Order wajib dilampirkan PO, jika tidak melampirkan PO maka barang harus dikembalikan
+* Pada saat pengantaran wajib mencantumkan kuantiti barang di Delivery Order yang sesuai dengan PO.
+* Yang berwenang menerima barang hanya nama yang tertera diatas kolom Deliver To.
+
+Sebelum pengantaran mohon hubungi contact person penerima terlebih dahulu
+                        '),
+                                ])
                     ->columns(2)
                     ->columnSpanFull(),
             ]);

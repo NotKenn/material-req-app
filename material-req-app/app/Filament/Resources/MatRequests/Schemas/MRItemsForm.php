@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\MatRequests\Schemas;
 
+use App\Models\itemmaster;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Repeater\TableColumn;
 use Filament\Forms\Components\Select;
@@ -9,6 +10,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Set;
 
 class MRItemsForm
 {
@@ -27,7 +29,19 @@ class MRItemsForm
                     TableColumn::make('Satuan'),
                 ])
                 ->schema([
-                    TextInput::make('itemName')
+                    Select::make('itemName')
+                        ->options(itemmaster::pluck('itemName', 'itemName'))
+                        ->searchable()
+                        ->live()
+                        ->afterStateUpdated(function ($state, Set $set) {
+
+                            $item = itemmaster::where('itemName', $state)->first();
+
+                            if ($item) {
+                                $set('notes', $item->itemDesc);
+                            }
+
+                        })
                         ->label('Item Name')
                         ->required(),
                     TextInput::make('notes')

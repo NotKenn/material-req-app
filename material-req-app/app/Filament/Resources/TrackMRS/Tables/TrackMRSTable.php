@@ -29,9 +29,12 @@ class TrackMRSTable
                     ->searchable(),
                 TextColumn::make('po_file')
                     ->url(fn ($record) => $record->po_file ? asset('storage/' . $record->po_file) : null, shouldOpenInNewTab: true)
-                    ->formatStateUsing(fn ($state) => $state ? 'Download' : '-') 
+                    ->formatStateUsing(fn ($state) => $state ? 'Download' : '-')
                     ->color('info')
                     ->searchable(),
+                TextColumn::make('reject_note')
+                    ->label('Reject Note')
+                    ->wrap(),
             ])
             ->filters([
                 Filter::make('myRequests')
@@ -39,7 +42,7 @@ class TrackMRSTable
                 ->query(function ($query) {
                 $user = filament()->auth()->user();
 
-                if ($user && $user->role === 'User') {
+                if ($user && $user->role === 'Requester') {
                     return $query->where('user_id', $user->id);
                 }
 
@@ -48,11 +51,11 @@ class TrackMRSTable
             ])
             ->recordActions([
                 EditAction::make()
-                ->visible(fn ($record) 
+                ->visible(fn ($record)
                 =>in_array(filament()->auth()->user()?->role, ['Admin', 'Purchasing'])
                 )
                 // || $record->user_id === filament()->auth()->id() //yg ini pindahin ke atas
-                                                                    //disamping kiri tutup kurung yg melayang 
+                                                                    //disamping kiri tutup kurung yg melayang
                                                                     //ni klo mau dipake
                 ->label('Approving'),
             ])

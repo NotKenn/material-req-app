@@ -67,6 +67,9 @@ class TrackMRForm
                         ->columnSpanFull()
                         ->default('New'),
 
+                    TextInput::make('reject_note')
+                    ->label('Note Reject'),
+
                     FileUpload::make('po_file') //kerjaan PO nanti, ini kasih kesana di form khusus mr approved or some shit
                         ->label('PO File')
                         ->disk('public')

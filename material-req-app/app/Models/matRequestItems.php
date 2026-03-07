@@ -16,6 +16,11 @@ class matRequestItems extends Model
         'satuan',
         'notes'
     ];
-    
+
     public $timestamps = false;
+
+    public function itemMaster()
+    {
+        return $this->belongsTo(itemmaster::class, 'itemName');
+    }
 }

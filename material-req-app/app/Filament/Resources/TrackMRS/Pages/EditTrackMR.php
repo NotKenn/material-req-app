@@ -26,28 +26,40 @@ class EditTrackMR extends EditRecord
     }
     protected function afterSave(): void
     {
-    $mr = $this->record; // record MR yang baru saja diupdate
+        $mr = $this->record;
+        $count = $mr->increment('reject_count');
+        $now = now();
+        $rejectNote = $this->data['reject_note'] ?? null;
+        $originalStatus = $mr->getOriginal('status');
 
-    if ($mr->wasChanged('status') || $mr->wasChanged('po_file')) {
-        $recipient = User::find($mr->user_id); // ambil user berdasarkan user_id
-        // dd($recipient);
+        if (
+            $originalStatus !== $mr->status &&
+            in_array($mr->status, ['Rejected', 'Revision'])
+        ) {
+            $mr->update([
+                'reject_note'  => $rejectNote,
+                'rejected_at'  => $now,
+                'reject_count' => $count,
+            ]);
 
-        if ($recipient) {
-            Notification::make()
-                ->title("MR {$mr->kodeRequest} diupdate")
-                ->body(
-                    $mr->wasChanged('status')
-                        ? "Status berubah menjadi {$mr->status}"
-                        : "File PO diupload"
-                )->warning()
-                ->actions([
-                    Action::make('Go')
-                        ->icon('heroicon-o-arrow-right')
-                        ->button()
-                        ->url('/track-m-r-s'),
-                ])
-                ->sendToDatabase($recipient);
+        }
+
+        // notification
+        if ($mr->wasChanged('status') || $mr->wasChanged('po_file')) {
+
+            $recipient = \App\Models\User::find($mr->user_id);
+
+            if ($recipient) {
+                \Filament\Notifications\Notification::make()
+                    ->title("MR {$mr->kodeRequest} diupdate")
+                    ->body(
+                        $mr->wasChanged('status')
+                            ? "Status berubah menjadi {$mr->status}"
+                            : "File PO diupload"
+                    )
+                    ->warning()
+                    ->sendToDatabase($recipient);
+            }
         }
     }
-}
 }

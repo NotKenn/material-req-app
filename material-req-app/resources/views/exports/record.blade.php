@@ -290,7 +290,7 @@
         @endphp
 
         <tr>
-            <td>{{ $item->itemName }}</td>
+            <td>{{ $item->note }}</td>
             <td style="border-right:none;">{{ $item->qty }}</td>
             <td style="border-left:none;">{{ $item->unit }}</td>
 
@@ -335,11 +335,13 @@
     <tr>
         <td style="width:62.5%; vertical-align:top; padding:5px;font-size:11px;">
             <b>REMARKS:</b><br>
-            * Pembayaran akan dilakukan oleh nama PT yang tertera di "Company Name" yang tertera dibagian atas <br>
+            {!! nl2br(e($record->remarks)) !!}
+
+            {{-- * Pembayaran akan dilakukan oleh nama PT yang tertera di "Company Name" yang tertera dibagian atas <br>
             * Setiap Delivery Order wajib dilampirkan PO, jika tidak melampirkan PO maka barang harus dikembalikan <br>
             * Pada saat pengantaran wajib mencantumkan kuantiti barang di Delivery Order yang sesuai dengan PO. <br>
             * Yang berwenang menerima barang hanya nama yang tertera diatas kolom Deliver To. <br><br>
-            Sebelum pengantaran mohon hubungi contact person penerima terlebih dahulu <br>
+            Sebelum pengantaran mohon hubungi contact person penerima terlebih dahulu <br> --}}
         </td>
         <td style="width:36.5%; padding:5px; max-width:36.5%">
             <table style="width:100%; border-collapse: collapse;" border="1">

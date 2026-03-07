@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\PoDetails\Schemas;
 
+use App\Models\itemmaster;
 use App\Models\MatRequestItems;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
@@ -9,6 +10,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 
 class PoItemsForm
@@ -108,7 +110,19 @@ class PoItemsForm
                         ->schema([
                             Hidden::make('mr_item_id'),
 
-                            TextInput::make('itemName')
+                            Select::make('itemName')
+                                ->options(itemmaster::pluck('itemName', 'itemName'))
+                                ->searchable()
+                                ->live()
+                                ->afterStateUpdated(function ($state, Set $set) {
+
+                                    $item = itemmaster::where('itemName', $state)->first();
+
+                                    if ($item) {
+                                        $set('note', $item->itemDesc);
+                                    }
+
+                                })
                                 ->label('Item')
                                 ->dehydrated(),
 

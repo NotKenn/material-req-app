@@ -23,11 +23,11 @@ class EditPoDetails extends EditRecord
     }
     protected function afterSave(): void
     {
-        $approval = $this->record->approvals()->latest('approved_at')->first();
+        $approval = $this->record->approvals()->latest('approved_at')?->first();
 
-        if($approval->status === 'Rejected' && $this->record->wasChanged())
+        if($approval?->status === 'Rejected' && $this->record->wasChanged())
         {
-            $approval->update([
+            $approval?->update([
                 'status' => 'Revision',
             ]);
         }

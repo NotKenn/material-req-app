@@ -21,7 +21,10 @@ class matRequest extends Model
         'phone',
         'departemen',
         'edit_count',
-        'last_edited_by'
+        'last_edited_by',
+        'reject_note',
+        'reject_count',
+        'reject_at'
     ];
 
     public $timestamps = false;

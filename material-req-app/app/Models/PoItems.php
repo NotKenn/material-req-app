@@ -39,6 +39,12 @@ class PoItems extends Model
     {
         return $this->belongsTo(matRequestItems::class, 'mr_item_id');
     }
+
+    public function itemMaster()
+    {
+        return $this->belongsTo(itemmaster::class, 'itemName');
+    }
+
     public function poDetail()
     {
         return $this->belongsTo(PoDetails::class, 'po_id', 'id');

@@ -13,6 +13,7 @@ class mrDetails extends Model
         'lokasiPengantaran',
         'lampiran',
         'notes',
+        
 
     ];
 

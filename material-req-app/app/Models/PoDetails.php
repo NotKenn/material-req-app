@@ -20,7 +20,8 @@ class PoDetails extends Model
         'termOfPayment',
         'vendorID',
         'isRevised',
-        'gl_disc'
+        'gl_disc',
+        'remarks'
     ];
 
     public $timestamps = false;
