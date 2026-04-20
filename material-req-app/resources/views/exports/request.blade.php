@@ -196,10 +196,15 @@
 </table>
 {{-- Attachment Section --}}
 @php
-    $details = \App\Models\mrDetails::where('mr_ids', $record->id)->first();
-    $attachments = $details && $details->lampiran
-        ? json_decode($details?->lampiran, true)
-        : [];
+    $details = \App\Models\mrDetails::where('mr_ids', $record->id)?->first();
+
+    $attachments = [];
+
+    if ($details && $details->lampiran) {
+        $attachments = is_array($details->lampiran)
+            ? $details->lampiran
+            : json_decode($details->lampiran, true);
+    }
 @endphp
 
 @if (!empty($attachments))
@@ -212,7 +217,7 @@
             $extension = strtolower(pathinfo($absolutePath, PATHINFO_EXTENSION));
         @endphp
 
-        <div style="text-align:center; margin-top:10px;">
+         <div style="text-align:center; margin-top:10px;">
             <h4>Lampiran {{ $index + 1 }}</h4>
 
             @if (in_array($extension, ['jpg', 'jpeg', 'png']))
@@ -222,7 +227,10 @@
                     style="max-width: 90%; max-height: 600px; object-fit: contain;"
                 >
             @elseif ($extension === 'pdf')
-                <p>File PDF: {{ basename($filePath) }}</p>
+                <iframe
+                    src="{{ url('/preview/' . $path) }}"
+                    style="width: 90%; height: 600px;"
+                ></iframe>
             @else
                 <p>File: {{ basename($path) }}</p>
             @endif

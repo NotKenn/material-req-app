@@ -29,7 +29,7 @@ class MatRequestForm
             ->schema([
                 TextInput::make('kodeRequest')
                     ->label('Kode Request')
-                    ->default(fn () => \App\Models\LastNumbers::peek('MR'))
+                    ->default(fn () => lastNumbers::peek('MR'))
                     ->disabled() // biar user ga ubah manual
                     ->dehydrated(true),
 

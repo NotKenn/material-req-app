@@ -87,21 +87,114 @@ Route::get('/test-pdf/{record}', function ($id) {
     );
 });
 
+
 Route::get('/mr/{record}/pdf', function ($id) {
-    $record = MatRequest::findOrFail($id);
 
-    $pdf = Pdf::loadView('exports.request', compact('record'))
-        ->setPaper('a4', 'Potrait');
+    $record = \App\Models\matRequest::findOrFail($id);
 
-    return response()->stream(
-        fn() => print($pdf->output()),
-        200,
-        [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => "inline; filename=MR-{$record->kodeRequest}.pdf",
-        ]
-    );
+    // =========================
+    // 1. Generate MR PDF
+    // =========================
+    $mrPdfPath = storage_path("app/temp_mr_{$record->id}.pdf");
+
+    Pdf::loadView('exports.request', compact('record'))
+        ->setPaper('a4', 'portrait')
+        ->save($mrPdfPath);
+
+    // =========================
+    // 2. Collect all PDFs
+    // =========================
+    $pdfFiles = [$mrPdfPath];
+
+    $details = \App\Models\mrDetails::where('mr_ids', $record->id)->first();
+
+    if ($details && $details->lampiran) {
+        $attachments = is_string($details->lampiran)
+            ? json_decode($details->lampiran, true)
+            : $details->lampiran;
+
+        foreach ($attachments as $file) {
+            $filePath = storage_path('app/private/' . $file);
+
+            if (
+                file_exists($filePath) &&
+                strtolower(pathinfo($file, PATHINFO_EXTENSION)) === 'pdf'
+            ) {
+                $pdfFiles[] = $filePath;
+            }
+        }
+    }
+
+    // =========================
+    // 3. Merge pakai FPDI
+    // =========================
+    $pdf = new Fpdi();
+
+    $pageWidth = 210;  // A4 width (mm)
+    $pageHeight = 297; // A4 height (mm)
+
+    foreach ($pdfFiles as $filePath) {
+
+        $pageCount = $pdf->setSourceFile($filePath);
+
+        for ($i = 1; $i <= $pageCount; $i++) {
+
+            $pdf->AddPage('P', [$pageWidth, $pageHeight]);
+
+            $tpl = $pdf->importPage($i);
+            $size = $pdf->getTemplateSize($tpl);
+
+            // 🔥 SCALE (object-fit: contain)
+            $scale = min(
+                $pageWidth / $size['width'],
+                $pageHeight / $size['height']
+            );
+
+            $newWidth = $size['width'] * $scale;
+            $newHeight = $size['height'] * $scale;
+
+            // 🔥 CENTER
+            $x = ($pageWidth - $newWidth) / 2;
+            $y = ($pageHeight - $newHeight) / 2;
+
+            $pdf->useTemplate($tpl, $x, $y, $newWidth, $newHeight);
+        }
+    }
+
+    // =========================
+    // 4. Save merged PDF
+    // =========================
+    $mergedPath = storage_path("app/temp_mr_{$record->id}_merged.pdf");
+    $pdf->Output($mergedPath, 'F');
+
+    // cleanup MR temp
+    @unlink($mrPdfPath);
+
+    // =========================
+    // 5. Return response
+    // =========================
+    return response()->file($mergedPath, [
+        'Content-Type' => 'application/pdf',
+        'Content-Disposition' => "inline; filename=\"MR-{$record->kodeRequest}-Merged.pdf\"",
+    ]);
+
 })->name('mr.preview.pdf');
+
+// Route::get('/mr/{record}/pdf', function ($id) {
+//     $record = MatRequest::findOrFail($id);
+
+//     $pdf = Pdf::loadView('exports.request', compact('record'))
+//         ->setPaper('a4', 'Potrait');
+
+//     return response()->stream(
+//         fn() => print($pdf->output()),
+//         200,
+//         [
+//             'Content-Type' => 'application/pdf',
+//             'Content-Disposition' => "inline; filename=MR-{$record->kodeRequest}.pdf",
+//         ]
+//     );
+// })->name('mr.preview.pdf');
 
 Route::get('/po/{record}/pdf', function ($id) {
     $record = PoDetails::findOrFail($id);

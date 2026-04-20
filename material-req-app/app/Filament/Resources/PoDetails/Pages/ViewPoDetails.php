@@ -20,7 +20,7 @@ class ViewPoDetails extends ViewRecord
             Action::make('back')
                 ->label('Back')
                 ->icon(Heroicon::ArrowLeftEndOnRectangle)
-                ->url($this->getResource()::getUrl('index'))
+                ->url('javascript:history.back()')
                 ->color(Color::Orange),
         ];
     }

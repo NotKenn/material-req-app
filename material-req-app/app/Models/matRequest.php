@@ -68,7 +68,10 @@ class matRequest extends Model
     {
         return $this->belongsTo(penerima::class, 'penerima_id');
     }
-
+    public function itemMaster()
+    {
+        return $this->belongsTo(itemmaster::class, 'itemName');
+    }
     public function pos()
     {
         return $this->belongsToMany(

@@ -47,7 +47,7 @@ class PoDetailsForm
 
                         TextInput::make('po_number')
                             ->label('Nomor PO')
-                            ->default(fn () => \App\Models\LastNumbers::peek('PO'))
+                            ->default(fn () => lastNumbers::peek('PO'))
                             ->disabled()
                             ->dehydrated(true),
 

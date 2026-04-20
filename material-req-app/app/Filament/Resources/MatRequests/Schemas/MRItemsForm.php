@@ -30,20 +30,37 @@ class MRItemsForm
                 ])
                 ->schema([
                     Select::make('itemName')
-                        ->options(itemmaster::pluck('itemName', 'itemName'))
-                        ->searchable()
-                        ->live()
-                        ->afterStateUpdated(function ($state, Set $set) {
+                    ->options(itemmaster::pluck('itemName', 'itemName'))
+                    ->searchable()
+                    ->live()
+                    ->createOptionForm([
+                        TextInput::make('itemName')
+                            ->label('Item Name')
+                            ->required(),
 
-                            $item = itemmaster::where('itemName', $state)->first();
+                        TextInput::make('itemDesc')
+                            ->label('Description'),
+                    ])
+                    ->createOptionUsing(function (array $data) {
 
-                            if ($item) {
-                                $set('notes', $item->itemDesc);
-                            }
+                        $item = itemmaster::create([
+                            'itemName' => $data['itemName'],
+                            'itemDesc' => $data['itemDesc'],
+                        ]);
 
-                        })
-                        ->label('Item Name')
-                        ->required(),
+                        return $item->itemName; // ini penting karena key kamu itemName
+                    })
+                    ->afterStateUpdated(function ($state, Set $set) {
+
+                        $item = itemmaster::where('itemName', $state)->first();
+
+                        if ($item) {
+                            $set('notes', $item->itemDesc);
+                        }
+
+                    })
+                    ->label('Item Name')
+                    ->required(),
                     TextInput::make('notes')
                         ->label('Keterangan'),
                     TextInput::make('Qty')

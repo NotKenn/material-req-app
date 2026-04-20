@@ -5,6 +5,7 @@ namespace App\Filament\Resources\MatRequests;
 use App\Filament\Resources\MatRequests\Pages\CreateMatRequest;
 use App\Filament\Resources\MatRequests\Pages\EditMatRequest;
 use App\Filament\Resources\MatRequests\Pages\ListMatRequests;
+use App\Filament\Resources\MatRequests\Pages\ViewMatRequest;
 use App\Filament\Resources\MatRequests\RelationManagers\ApprovalsRelationManager;
 use App\Filament\Resources\MatRequests\Schemas\MatRequestForm;
 use App\Filament\Resources\MatRequests\Schemas\MRDetailsForm;
@@ -43,6 +44,11 @@ class MatRequestResource extends Resource
         return $user && in_array($user->role, ['Admin','Requester','ApproverMR']);
     }
 
+    public static function canView($record): bool
+    {
+        return filament()->auth()->check();
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema->components(array_merge(
@@ -74,6 +80,7 @@ class MatRequestResource extends Resource
             'index' => ListMatRequests::route('/'),
             'create' => CreateMatRequest::route('/create'),
             'edit' => EditMatRequest::route('/{record}/edit'),
+            'view' => ViewMatRequest::route('/{record}'),
         ];
     }
 }

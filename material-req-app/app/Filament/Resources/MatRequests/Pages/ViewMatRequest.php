@@ -9,7 +9,7 @@ use Filament\Resources\Pages\ViewRecord;
 use Filament\Support\Colors\Color;
 use Filament\Support\Icons\Heroicon;
 
-class ViewUser extends ViewRecord
+class ViewMatRequest extends ViewRecord
 {
     protected static string $resource = MatRequestResource::class;
 
@@ -20,7 +20,7 @@ class ViewUser extends ViewRecord
             Action::make('back')
                 ->label('Back')
                 ->icon(Heroicon::ArrowLeftEndOnRectangle)
-                ->url($this->getResource()::getUrl('index'))
+                ->url('javascript:history.back()')
                 ->color(Color::Orange),
         ];
     }

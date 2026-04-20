@@ -111,9 +111,25 @@ class PoItemsForm
                             Hidden::make('mr_item_id'),
 
                             Select::make('itemName')
-                                ->options(itemmaster::pluck('itemName', 'itemName'))
-                                ->searchable()
+                                ->options(fn() => itemmaster::pluck('itemName', 'itemName'))
+                                ->reactive()
                                 ->live()
+                                ->searchable()
+                                ->createOptionForm([
+                                    TextInput::make('itemName')
+                                        ->label('Item Name')
+                                        ->required(),
+
+                                    TextInput::make('itemDesc')
+                                        ->label('Description'),
+                                ])
+                                ->createOptionUsing(function (array $data) {
+                                    $item = itemmaster::create([
+                                        'itemName' => $data['itemName'],
+                                        'itemDesc' => $data['itemDesc'],
+                                    ]);
+                                    return $item->itemName; // karena key kamu itemName
+                                })
                                 ->afterStateUpdated(function ($state, Set $set) {
 
                                     $item = itemmaster::where('itemName', $state)->first();
@@ -124,8 +140,8 @@ class PoItemsForm
 
                                 })
                                 ->label('Item')
+                                ->reactive()
                                 ->dehydrated(),
-
                             TextInput::make('qty')
                             ->numeric()
                             ->dehydrated(),

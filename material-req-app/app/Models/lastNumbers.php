@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 class lastNumbers extends Model
 {
-    public $table = 'lastNumbers';
+    public $table = 'lastnumbers';
 
     protected $fillable = [
         // id, kodeRequest, status, po_file, created_at
