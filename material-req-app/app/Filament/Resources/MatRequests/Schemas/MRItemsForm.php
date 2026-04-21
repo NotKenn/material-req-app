@@ -27,6 +27,8 @@ class MRItemsForm
                     TableColumn::make('Keterangan'),
                     TableColumn::make('Qty'),
                     TableColumn::make('Satuan'),
+                    TableColumn::make('Last Pembelian'),
+
                 ])
                 ->schema([
                     Select::make('itemName')
@@ -62,13 +64,15 @@ class MRItemsForm
                     ->label('Item Name')
                     ->required(),
                     TextInput::make('notes')
-                        ->label('Keterangan'),
+                    ->label('Keterangan'),
                     TextInput::make('Qty')
-                        ->label('Quantity')
-                        ->required(),
+                    ->label('Quantity')
+                    ->required(),
                     TextInput::make('satuan')
-                        ->label('Satuan')
-                        ->required(),
+                    ->label('Satuan')
+                    ->required(),
+                    TextInput::make('lastPembelian')
+                    ->label('Detail Pembelian Terakhir'),
                 ])
                 ->createItemButtonLabel('Add Item'),
             // Back to default, cluttered Item lists

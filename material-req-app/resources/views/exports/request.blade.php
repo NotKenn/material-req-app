@@ -9,6 +9,7 @@
         th, td { border: 1px solid #ddd; padding: 6px; text-align: left; }
         th{background-color:gray; text-align:center;}
         #logo-black{ width:25%;}
+
     </style>
 </head>
 <body>
@@ -51,73 +52,88 @@
     </table>
     <br>
     <!-- Credentials -->
-    <table style="width:100%; border-collapse: collapse; border: none; padding:0; margin:0;">
+    <table style="width:100%; border-collapse:collapse; border:none;">
+
+        <!-- ROW 1 -->
         <tr>
-            <td style="width:50%; border:none; padding:0; margin:0; vertical-align: top;">
-                <table style="width:100%; border-collapse: collapse; border:none; margin:0; padding:0;">
-                    <tr>
-                        <td style="border:none; padding:4px;">
-                            <span style="display:inline-block; width:120px;vertical-align:middle;">Tanggal</span>
-                            <span style="display:inline-block;vertical-align:middle;">:</span>
-                            <span style="display:inline-block;vertical-align:middle;"> {{ $details->tanggal }} </span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="border:none; padding:4px;">
-                            <span style="display:inline-block; width:120px;vertical-align:middle;">Nama PT</span>
-                            <span style="display:inline-block;vertical-align:middle;">:</span>
-                            <span style="display:inline-block;vertical-align:middle;"> {{ $getReqName->namaPT }} </span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="border:none; padding:4px;">
-                            <span style="display:inline-block; width:120px;vertical-align:middle;">Departemen</span>
-                            <span style="display:inline-block;vertical-align:middle;">:</span>
-                            <span style="display:inline-block;vertical-align:middle;"> {{ $record->departemen }} </span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="border:none; padding:4px;">
-                            <span style="display:inline-block; width:120px;vertical-align:middle;">Diperlukan tanggal</span>
-                            <span style="display:inline-block;vertical-align:middle;">:</span>
-                            <span style="display:inline-block;vertical-align:middle;"> {{ $details->tanggalPerlu }} </span>
-                        </td>
-                    </tr>
-                </table>
+            <td style="width:120px; padding:4px 6px;border:none !important;">Tanggal</td>
+            <td style="width:10px; text-align:center;border:none !important;;">:</td>
+            <td style="padding:4px 6px; width:150px;border:none !important;">
+                {{ $details->tanggal }}
             </td>
-            <td style="width:50%; border:none; padding:0; margin:0; vertical-align: top;">
-                <table style="width:100%; border-collapse: collapse; border:none; margin:0; padding:0;">
-                    <tr>
-                        <td style="border:none; padding:4px;">
-                            <span style="display:inline-block; width:175px;vertical-align:middle;">Lokasi Pengantaran</span>
-                            <span style="display:inline-block;vertical-align:middle;">:</span>
-                            <span style="display:inline-block;vertical-align:middle;"> {{ $penerima->lokasiPengantaran }} </span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="border:none; padding:4px;">
-                            <span style="display:inline-block; width:175px;vertical-align:middle;">Nama Penerima Barang</span>
-                            <span style="display:inline-block;vertical-align:middle;">:</span>
-                            <span style="display:inline-block;vertical-align:middle;"> {{ $getReqName->namaKontakPT }} </span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="border:none; padding:4px;">
-                            <span style="display:inline-block; width:175px;vertical-align:middle;">No. Hp Penerima Barang</span>
-                            <span style="display:inline-block;vertical-align:middle;">:</span>
-                            <span style="display:inline-block;vertical-align:middle;"> {{ $getReqName->noTelpKontakPT }} </span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="border:none; padding:4px;">
-                            <span style="display:inline-block; width:175px;vertical-align:middle;">Lampiran (*Terlampir/Tidak)</span>
-                            <span style="display:inline-block;vertical-align:middle;">:</span>
-                            {{-- <span style="display:inline-block;vertical-align:middle;"> {{ $record->termOfPayment }} </span> --}}
-                        </td>
-                    </tr>
-                </table>
+
+            @php
+                $lokasi = $penerima->lokasiPengantaran ?? '';
+                $len = strlen($lokasi);
+
+                if ($len > 120) {
+                    $fontSize = '9px';
+                } elseif ($len > 80) {
+                    $fontSize = '10px';
+                } else {
+                    $fontSize = '12px';
+                }
+            @endphp
+
+            <td style="width:160px; padding:4px 6px;border:none !important;">Lokasi Pengantaran</td>
+            <td style="width:10px; text-align:center;border:none !important;">:</td>
+            <td style="
+                padding:4px 6px;
+                word-break:break-word;
+                white-space:normal;
+                max-width:250px;
+                border:none !important;
+                font-size: {{ $fontSize }};
+            ">
+                {{ $lokasi }}
             </td>
         </tr>
+
+        <!-- ROW 2 -->
+        <tr>
+            <td style="padding:4px 6px;border:none !important;">Nama PT</td>
+            <td style="text-align:center;border:none !important;">:</td>
+            <td style="padding:4px 6px;border:none !important;">
+                {{ $getReqName->namaPT }}
+            </td>
+
+            <td style="padding:4px 6px;border:none !important;">Nama Penerima</td>
+            <td style="text-align:center;border:none !important;">:</td>
+            <td style="padding:4px 6px;border:none !important;">
+                {{ $getReqName->namaKontakPT }}
+            </td>
+        </tr>
+
+        <!-- ROW 3 -->
+        <tr>
+            <td style="padding:4px 6px;border:none !important;">Departemen</td>
+            <td style="text-align:center;border:none !important;">:</td>
+            <td style="padding:4px 6px;border:none !important;">
+                {{ $record->departemen }}
+            </td>
+
+            <td style="padding:4px 6px;border:none !important;">No. HP</td>
+            <td style="text-align:center;border:none !important;">:</td>
+            <td style="padding:4px 6px;border:none !important;">
+                {{ $getReqName->noTelpKontakPT }}
+            </td>
+        </tr>
+
+        <!-- ROW 4 -->
+        <tr>
+            <td style="padding:4px 6px;border:none !important;">Diperlukan tanggal</td>
+            <td style="text-align:center;border:none !important;">:</td>
+            <td style="padding:4px 6px;border:none !important;">
+                {{ $details->tanggalPerlu }}
+            </td>
+
+            <td style="padding:4px 6px;border:none !important;">Lampiran (*Terlampir/Tidak)</td>
+            <td style="text-align:center;border:none !important;">:</td>
+            <td style="padding:4px 6px;border:none !important;">
+
+            </td>
+        </tr>
+
     </table>
     {{-- items --}}
     <table>

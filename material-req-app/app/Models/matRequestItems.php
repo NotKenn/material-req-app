@@ -14,7 +14,8 @@ class matRequestItems extends Model
         'itemName',
         'Qty',
         'satuan',
-        'notes'
+        'notes',
+        'lastPembelian'
     ];
 
     public $timestamps = false;
