@@ -57,7 +57,7 @@
         <!-- ROW 1 -->
         <tr>
             <td style="width:120px; padding:4px 6px;border:none !important;">Tanggal</td>
-            <td style="width:10px; text-align:center;border:none !important;;">:</td>
+            <td style="width:10px; text-align:center;border:none !important;">:</td>
             <td style="padding:4px 6px; width:150px;border:none !important;">
                 {{ $details->tanggal }}
             </td>

@@ -117,7 +117,7 @@
             </td>
         </tr>
     </table>
-<table style="width:100%; border-collapse:collapse; margin-top:10px; font-size:12px; border:1px solid #000;">
+<table style="width:100%; style="border-collapse: separate; border-spacing: 0; margin-top:10px; font-size:12px; border:1px solid #000;">
 
     @php
         $vendor = \App\Models\vendor::where('id', $record->vendorID)->first();
@@ -155,7 +155,7 @@
         </th>
 
         <!-- spacer -->
-        <th style="border:none;"></th>
+        <th style="border:none; width:20px; background:none; border-top:none !important"></th>
 
         <th colspan="3" style="background:grey; text-align:center; border:1px solid #000; padding:6px;">
             Deliver To
@@ -164,68 +164,68 @@
 
     <!-- ROW 1 -->
     <tr>
-        <td style="width:100px; border:1px solid #000; padding:6px;">Company Name</td>
-        <td style="width:10px; border:1px solid #000; text-align:center;">:</td>
-        <td style="width:120px; border:1px solid #000; padding:6px;">
+        <td style="width:100px; border:1px solid #000; padding:6px; border-right:none;">Company Name</td>
+        <td style="width:10px; border:1px solid #000; text-align:center; border-right:none; border-left:none">:</td>
+        <td style="width:140px; border:1px solid #000; padding:6px; border-left:none">
             {{ $vendor->vendorName }}
         </td>
 
-        <td style="width:80px; border:none;"></td>
+        <td style="border:none;"></td>
 
-        <td style="width:100px; border:1px solid #000; padding:6px;">Company Name</td>
-        <td style="width:10px; border:1px solid #000; text-align:center;">:</td>
-        <td style="border:1px solid #000; padding:6px;">
+        <td style="width:100px; border:1px solid #000; padding:6px; border-right:none;">Company Name</td>
+        <td style="width:10px; border:1px solid #000; text-align:center; border-right:none; border-left:none">:</td>
+        <td style="width:140px;border:1px solid #000; padding:6px; border-left:none">
             {{ $requesters->namaPT }}
         </td>
     </tr>
 
     <!-- ROW 2 -->
     <tr>
-        <td style="border:1px solid #000; padding:6px;">Address</td>
-        <td style="border:1px solid #000; text-align:center;">:</td>
-        <td style="border:1px solid #000; padding:6px; word-break:break-word; font-size: {{ $fontVendor }};">
+        <td style="border:1px solid #000; padding:6px; border-right:none;">Address</td>
+        <td style="width:10px; border:1px solid #000; text-align:center; border-right:none; border-left:none">:</td>
+        <td style="border:1px solid #000; padding:6px; word-break:break-word; border-left:none; font-size: {{ $fontVendor }};">
             {{ $alamatVendor }}
         </td>
 
         <td style="border:none;"></td>
 
-        <td style="border:1px solid #000; padding:6px;">Address</td>
-        <td style="border:1px solid #000; text-align:center;">:</td>
-        <td style="border:1px solid #000; padding:6px; word-break:break-word; font-size: {{ $fontKirim }};">
+        <td style="border:1px solid #000; padding:6px; border-right:none;">Address</td>
+        <td style="width:10px; border:1px solid #000; text-align:center; border-right:none; border-left:none">:</td>
+        <td style="border:1px solid #000; padding:6px; word-break:break-word; border-left:none; font-size: {{ $fontKirim }};">
             {{ $alamatKirim }}
         </td>
     </tr>
 
     <!-- ROW 3 -->
     <tr>
-        <td style="border:1px solid #000; padding:6px;">Contact</td>
-        <td style="border:1px solid #000; text-align:center;">:</td>
-        <td style="border:1px solid #000; padding:6px;">
+        <td style="border:1px solid #000; padding:6px; border-right:none;">Contact</td>
+        <td style="width:10px; border:1px solid #000; text-align:center; border-right:none; border-left:none">:</td>
+        <td style="border:1px solid #000; padding:6px; border-left:none">
             {{ $vendor->namaKontak }}
         </td>
 
         <td style="border:none;"></td>
 
-        <td style="border:1px solid #000; padding:6px;">Contact</td>
-        <td style="border:1px solid #000; text-align:center;">:</td>
-        <td style="border:1px solid #000; padding:6px;">
+        <td style="border:1px solid #000; padding:6px; border-right:none;">Contact</td>
+        <td style="width:10px; border:1px solid #000;text-align:center; border-right:none; border-left:none">:</td>
+        <td style="border:1px solid #000; padding:6px; border-left:none">
             {{ $penerima->namaPenerima }}
         </td>
     </tr>
 
     <!-- ROW 4 -->
     <tr>
-        <td style="border:1px solid #000; padding:6px;">Phone</td>
-        <td style="border:1px solid #000; text-align:center;">:</td>
-        <td style="border:1px solid #000; padding:6px;">
+        <td style="border:1px solid #000; padding:6px; border-right:none;">Phone</td>
+        <td style="width:10px; border:1px solid #000; text-align:center; border-right:none; border-left:none">:</td>
+        <td style="border:1px solid #000; padding:6px; border-left:none">
             {{ $vendor->nomorTelepon }}
         </td>
 
         <td style="border:none;"></td>
 
-        <td style="border:1px solid #000; padding:6px;">Phone</td>
-        <td style="border:1px solid #000; text-align:center;">:</td>
-        <td style="border:1px solid #000; padding:6px;">
+        <td style="border:1px solid #000; padding:6px; border-right:none;">Phone</td>
+        <td style="width:10px; border:1px solid #000; text-align:center; border-right:none; border-left:none">:</td>
+        <td style="border:1px solid #000; padding:6px; border-left:none">
             {{ $penerima->nomorKontak }}
         </td>
     </tr>
@@ -298,7 +298,7 @@
                 $discountDisplay = '-';
             } elseif (str_contains($discountRaw, '%')) {
                 $percent = (float) str_replace('%', '', $discountRaw);
-                $discountDisplay = number_format($item->calculated_discount, 0, ',', '.') . "(". "{$percent}%" . ")";
+                $discountDisplay = number_format($item->calculated_discount, 0, ',', '.') ." ". "(". "{$percent}%" . ")";
                 // dd($discountDisplay);
             } else {
                 $discountDisplay = number_format($item->calculated_discount, 0, ',', '.');

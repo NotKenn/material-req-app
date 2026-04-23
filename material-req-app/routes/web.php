@@ -87,6 +87,48 @@ Route::get('/test-pdf/{record}', function ($id) {
     );
 });
 
+use App\Exports\PoExport;
+use App\Exports\DummyExport;
+use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+
+Route::get('/test-po/{id}', function ($id) {
+    return (new PoExport($id))->download();
+});
+
+// Route::get('/test-export', function () {
+
+//     $templatePath = storage_path('app/private/templates/po_templates.xlsx');
+
+//     $spreadsheet = IOFactory::load($templatePath);
+//     $sheet = $spreadsheet->getActiveSheet();
+
+//     // isi data
+//     $sheet->setCellValue('F6', 'PT. XYZ');
+//     $sheet->setCellValue('F7', 'Alamat panjang bet bet bet bet 123456 angsa bebek cicak dodo elang');
+//     $sheet->setCellValue('F8', 'Syaifudin');
+//     $sheet->setCellValue('F9', '08123456789');
+
+//     $sheet->setCellValue('K6', 'PT. Energi Batam Jaya');
+//     $sheet->setCellValue('K7', '23/10/2026');
+//     $sheet->setCellValue('K8', 'Adi');
+//     $sheet->setCellValue('K9', '081234567890');
+
+//     // wrap text
+//     $sheet->getStyle('F7')->getAlignment()->setWrapText(true);
+
+//     // download
+//     $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+
+//     return new StreamedResponse(function () use ($writer) {
+//         $writer->save('php://output');
+//     }, 200, [
+//         "Content-Type" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+//         "Content-Disposition" => "attachment;filename=test.xlsx",
+//         "Cache-Control" => "max-age=0",
+//     ]);
+// });
 
 // Route::get('/mr/{record}/pdf', function ($id) {
 
