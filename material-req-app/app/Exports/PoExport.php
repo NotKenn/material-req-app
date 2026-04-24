@@ -3,15 +3,11 @@
 namespace App\Exports;
 
 use Illuminate\Support\Facades\DB;
-use Maatwebsite\Excel\Concerns\FromCollection;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 
-class PoExport implements FromCollection
+class PoExport
 {
-    /**
-    * @return \Illuminate\Support\Collection
-    */
     protected $data;
     protected $lastRow = 20;
 
@@ -23,19 +19,20 @@ class PoExport implements FromCollection
     private function prepare($poId)
     {
         $po = \App\Models\PoDetails::findOrFail($poId);
-
-        // 🔹 Vendor
         $vendor = \App\Models\Vendor::find($po->vendorID);
 
-        // 🔹 MR Codes
         $mrCodes = DB::table('mr_table')
             ->join('po_mr', 'mr_table.id', '=', 'po_mr.mr_id')
             ->where('po_mr.po_id', $poId)
             ->pluck('mr_table.kodeRequest')
             ->toArray();
 
-        // 🔹 Items
         $items = \App\Models\PoItems::where('po_id', $poId)->get();
+
+        $approvals = \App\Models\approvals::where('approvable_id', $po->id)
+                        ->where('approvable_type', \App\Models\PoDetails::class)
+                        ->latest('approved_at')
+                        ->first();
 
         $subtotal = 0;
         $totalItemDiscount = 0;
@@ -62,7 +59,6 @@ class PoExport implements FromCollection
             $totalItemDiscount += $discountValue;
         }
 
-        // 🔹 Global Discount
         $globalDiscRaw = $po->gl_disc;
         $globalDiscValue = 0;
 
@@ -78,29 +74,36 @@ class PoExport implements FromCollection
         $totalDiscount = $totalItemDiscount + $globalDiscValue;
         $grandTotal = max($subtotal - $totalDiscount, 0);
 
-        // 🔹 Signature
         $creator = \App\Models\User::find($po->user_id);
+        $supervisor = DB::table('users')->where('id', $approvals?->user_id)->first();
 
         $signaturePath = $creator?->signature
-            ? storage_path('app/public/' . $creator->signature)
+        ? storage_path('app/public/' . $creator->signature)
+        : null;
+        $supervisorSignature = $supervisor?->signature
+            ? storage_path('app/public/'.$supervisor?->signature)
             : null;
+        $signName = $creator?->name;
+        $superSignName = $supervisor->name;
 
-        // 🔥 RETURN SEMUA DATA (INI YANG NANTI DIPAKAI EXCEL)
+
         return [
             'po' => $po,
             'vendor' => $vendor,
             'mr_codes' => implode(', ', $mrCodes),
             'items' => $items,
-
             'totals' => [
                 'subtotal' => $subtotal,
                 'discount' => $totalDiscount,
                 'grand' => $grandTotal
             ],
-
-            'signature' => $signaturePath
+            'signature' => $signaturePath,
+            'supersign' => $supervisorSignature,
+            'signname' => $signName,
+            'superSignName' => $superSignName
         ];
     }
+
     public function download()
     {
         $spreadsheet = IOFactory::load(storage_path('app/private/templates/po_templates.xlsx'));
@@ -110,11 +113,13 @@ class PoExport implements FromCollection
         $this->injectItems($sheet);
         $this->injectTotals($sheet);
         $this->injectSignature($sheet);
+        $this->injectSignName($sheet);
 
         return response()->streamDownload(function () use ($spreadsheet) {
             IOFactory::createWriter($spreadsheet, 'Xlsx')->save('php://output');
         }, 'po.xlsx');
     }
+
     private function injectHeader($sheet)
     {
         $po = $this->data['po'];
@@ -127,61 +132,86 @@ class PoExport implements FromCollection
 
         $sheet->setCellValue('K6', $vendor->vendorName);
         $sheet->setCellValue('K7', $po->date);
-        $sheet->setCellValue('K8', $po->contactName);
-        $sheet->setCellValue('K9', $po->phone);
+        $sheet->setCellValue('K8', $this->data['mr_codes']);
+        $sheet->setCellValue('K9', $po->termOfPayment);
 
-        // MR Codes
-        $sheet->setCellValue('K10', $this->data['mr_codes']);
-
-        // wrap text kalau panjang
         $sheet->getStyle('F7')->getAlignment()->setWrapText(true);
     }
+
+    // 🔥 CORE FIX (ANTI RUSAK TEMPLATE)
     private function injectItems($sheet)
     {
         $items = $this->data['items'];
 
-        $startRow = 18; // sesuai template kamu
+        $startRow = 18; // template row
         $currentRow = $startRow;
 
         foreach ($items as $index => $item) {
 
             if ($index > 0) {
-                $sheet->insertNewRowBefore($currentRow, 1);
-
-                // copy style dari row template
-                $sheet->duplicateStyle(
-                    $sheet->getStyle("A{$startRow}:L{$startRow}"),
-                    "A{$currentRow}:L{$currentRow}"
-                );
+                $this->duplicateRow($sheet, $startRow, $currentRow);
             }
 
             $sheet->setCellValue("C{$currentRow}", $item->note);
             $sheet->setCellValue("H{$currentRow}", $item->qty);
             $sheet->setCellValue("I{$currentRow}", $item->unit);
-
             $sheet->setCellValue("K{$currentRow}", $item->price);
-            $sheet->setCellValue("L{$currentRow}", $item->final_total);
+            $sheet->setCellValue("L{$currentRow}", $item->amount);
 
             $currentRow++;
         }
 
-        // simpan posisi terakhir buat totals
-        $this->lastRow = $currentRow;
+        $this->lastRow = $currentRow - 1;
     }
+
+    // 🔥 DUPLICATE ROW DENGAN STYLE + MERGE
+    private function duplicateRow($sheet, $sourceRow, $targetRow)
+    {
+        $sheet->insertNewRowBefore($targetRow, 1);
+
+        foreach (range('A', 'L') as $col) {
+            $sheet->duplicateStyle(
+                $sheet->getStyle("{$col}{$sourceRow}"),
+                "{$col}{$targetRow}"
+            );
+        }
+
+        // copy row height
+        $sheet->getRowDimension($targetRow)->setRowHeight(
+            $sheet->getRowDimension($sourceRow)->getRowHeight()
+        );
+
+        // copy merge
+        foreach ($sheet->getMergeCells() as $merge) {
+            if (preg_match("/([A-Z]+){$sourceRow}:([A-Z]+){$sourceRow}/", $merge)) {
+                $sheet->mergeCells(str_replace($sourceRow, $targetRow, $merge));
+            }
+        }
+    }
+
+    // 🔥 TOTALS (AMAN, TIDAK GESER TEMPLATE)
     private function injectTotals($sheet)
     {
-        $totals = $this->data['totals'];
+        $items = $this->data['items'];
 
-        $row = $this->lastRow + 1;
+        $subtotal = 0;
+        $grandTotal = 0;
 
-        $sheet->setCellValue("D{$row}", 'SUBTOTAL');
-        $sheet->setCellValue("E{$row}", $totals['subtotal']);
+        foreach ($items as $item) {
+            $itemSubtotal = $item->qty * $item->price;
 
-        $sheet->setCellValue("D" . ($row + 1), 'DISCOUNT');
-        $sheet->setCellValue("E" . ($row + 1), $totals['discount']);
+            $subtotal += $itemSubtotal;
+            $grandTotal += $item->final_total;
+        }
 
-        $sheet->setCellValue("D" . ($row + 2), 'GRAND TOTAL');
-        $sheet->setCellValue("E" . ($row + 2), $totals['grand']);
+        $discount = $subtotal - $grandTotal;
+
+        // 🔥 posisi ikut row terakhir item
+        $row = $this->lastRow + 5;
+
+        $sheet->setCellValue("L{$row}", $subtotal);
+        $sheet->setCellValue("L" . ($row + 1), $discount);
+        $sheet->setCellValue("L" . ($row + 2), $grandTotal);
     }
     private function injectSignature($sheet)
     {
@@ -190,11 +220,28 @@ class PoExport implements FromCollection
         $drawing = new Drawing();
         $drawing->setPath($this->data['signature']);
         $drawing->setHeight(60);
-        $drawing->setCoordinates('B' . ($this->lastRow + 5));
+        $drawing->setCoordinates('K' . ($this->lastRow + 10));
+        $drawing->setWorksheet($sheet);
+
+        if (!$this->data['supersign']) return;
+
+        $drawing = new Drawing();
+        $drawing->setPath($this->data['supersign']);
+        $drawing->setHeight(60);
+        $drawing->setCoordinates('L' . ($this->lastRow + 10));
         $drawing->setWorksheet($sheet);
     }
-    public function collection()
+    private function injectSignName($sheet)
     {
-        //
+        $row = $this->lastRow + 14;
+
+
+        if (!$this->data['signname']) return;
+        $sheet->setCellValue("K{$row}", "Nama : " . $this->data['signname']);
+
+
+        if (!$this->data['superSignName']) return;
+        $sheet->setCellValue("L{$row}", "Nama : "  . $this->data['superSignName']);
+
     }
 }
