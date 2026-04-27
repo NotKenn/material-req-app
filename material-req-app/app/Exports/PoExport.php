@@ -21,6 +21,14 @@ class PoExport
         $po = \App\Models\PoDetails::findOrFail($poId);
         $vendor = \App\Models\Vendor::find($po->vendorID);
 
+        $getPenerimaID = DB::table('mr_table')
+                        ->join('po_mr', 'mr_table.id', '=', 'po_mr.mr_id')
+                        ->where('po_mr.po_id', $po->id)
+                        ->pluck('mr_table.penerima_id')
+                        ->first();
+
+        $penerima = \App\Models\penerima::where('id', $getPenerimaID)->first();
+
         $mrCodes = DB::table('mr_table')
             ->join('po_mr', 'mr_table.id', '=', 'po_mr.mr_id')
             ->where('po_mr.po_id', $poId)
@@ -90,6 +98,7 @@ class PoExport
         return [
             'po' => $po,
             'vendor' => $vendor,
+            'penerima' => $penerima,
             'mr_codes' => implode(', ', $mrCodes),
             'items' => $items,
             'totals' => [
@@ -114,6 +123,8 @@ class PoExport
         $this->injectTotals($sheet);
         $this->injectSignature($sheet);
         $this->injectSignName($sheet);
+        $this->injectVendor($sheet);
+        $this->injectReceiver($sheet);
 
         return response()->streamDownload(function () use ($spreadsheet) {
             IOFactory::createWriter($spreadsheet, 'Xlsx')->save('php://output');
@@ -145,13 +156,14 @@ class PoExport
 
         $startRow = 18; // template row
         $currentRow = $startRow;
+        $no = 1;
 
         foreach ($items as $index => $item) {
 
             if ($index > 0) {
                 $this->duplicateRow($sheet, $startRow, $currentRow);
             }
-
+            $sheet->setCellValue("B{$currentRow}", $no);
             $sheet->setCellValue("C{$currentRow}", $item->note);
             $sheet->setCellValue("H{$currentRow}", $item->qty);
             $sheet->setCellValue("I{$currentRow}", $item->unit);
@@ -159,6 +171,7 @@ class PoExport
             $sheet->setCellValue("L{$currentRow}", $item->amount);
 
             $currentRow++;
+            $no++;
         }
 
         $this->lastRow = $currentRow - 1;
@@ -243,5 +256,24 @@ class PoExport
         if (!$this->data['superSignName']) return;
         $sheet->setCellValue("L{$row}", "Nama : "  . $this->data['superSignName']);
 
+    }
+    private function injectVendor($sheet)
+    {
+        $vendor = $this->data['vendor'];
+
+        $sheet->setCellValue('E12', $vendor->vendorName);
+        $sheet->setCellValue('E13', $vendor->alamat);
+        $sheet->setCellValue('E14', $vendor->namaKontak);
+        $sheet->setCellValue('E15', $vendor->nomorTelepon);
+    }
+    private function injectReceiver($sheet)
+    {
+        $po = $this->data['po'];
+        $penerima = $this->data['penerima'];
+
+        $sheet->setCellValue('K12', $po->companyName);
+        $sheet->setCellValue('K13', $penerima->lokasiPengantaran);
+        $sheet->setCellValue('K14', $penerima->namaPenerima);
+        $sheet->setCellValue('K15', $penerima->nomorKontak);
     }
 }

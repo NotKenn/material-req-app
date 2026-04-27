@@ -235,6 +235,7 @@
 <table>
     <thead>
         <tr>
+            <th>No.</th>
             <th>Description</th>
             <th colspan="2">Qty</th>
             <th colspan="2">Unit Price</th>
@@ -306,6 +307,7 @@
         @endphp
 
         <tr>
+            <td style="text-align: center">{{ $loop->iteration }}</td>
             <td>{{ $item->note }}</td>
             <td style="border-right:none;">{{ $item->qty }}</td>
             <td style="border-left:none;">{{ $item->unit }}</td>
@@ -346,6 +348,9 @@
     @endforeach
     </tbody>
 </table>
+<p>Note Pengantaran : {{$record->notePengantaran}}</p>
+<br>
+<p>Note Tambahan : {{$record->extraNote}}</p>
 {{-- Remarks & Totals --}}
 <table style="width:100%; border-collapse: collapse; margin-top:10px;" border="1">
     <tr>

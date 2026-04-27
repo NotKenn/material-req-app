@@ -94,6 +94,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 Route::get('/test-po/{id}', function ($id) {
+    // echo 'yu';
     return (new PoExport($id))->download();
 });
 

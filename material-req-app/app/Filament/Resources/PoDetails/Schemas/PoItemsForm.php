@@ -10,11 +10,22 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\TextInput\Mask;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 
 class PoItemsForm
 {
+    public static function updateGrandTotal($get, $set)
+    {
+        $items = $get('../../items') ?? [];
+
+        $sum = collect($items)->sum(function ($item) {
+            return (float) preg_replace('/[^0-9]/', '', (string) ($item['total'] ?? 0));
+        });
+
+        $set('../../grand_total', number_format($sum, 0, ',', '.'));
+    }
     public static function configure(Schema $schema): Schema
     {
         return $schema->components([
@@ -144,6 +155,29 @@ class PoItemsForm
                                 ->dehydrated(),
                             TextInput::make('qty')
                             ->numeric()
+                            ->afterStateUpdated(function ($state, $set, $get) {
+                                $price = (float) preg_replace('/[^0-9]/', '', (string) $get('price'));
+                                $qty   = (float) $state;
+
+                                $amount = $qty * $price;
+
+                                $discountInput = $get('discount') ?? 0;
+                                $discountValue = 0;
+
+                                if (is_string($discountInput) && str_contains($discountInput, '%')) {
+                                    $percent = (float) str_replace('%', '', $discountInput);
+                                    $discountValue = ($percent / 100) * $amount;
+                                } else {
+                                    $discountValue = (float) preg_replace('/[^0-9]/', '', (string) $discountInput);
+                                }
+
+                                $total = max($amount - $discountValue, 0);
+
+                                $set('amount', number_format($amount, 0, ',', '.'));
+                                $set('subtotal', $amount);
+                                $set('total', number_format($total, 0, ',', '.'));
+                                self::updateGrandTotal($get, $set);
+                            })
                             ->dehydrated(),
 
                             TextInput::make('unit')
@@ -158,9 +192,15 @@ class PoItemsForm
                                 ->label('Harga / Satuan')
                                 ->suffix('Rp')
                                 ->reactive()
-                                ->debounce(500)
+                                ->debounce(250)
                                 ->required()
                                 ->afterStateUpdated(function ($state, $set, $get) {
+                                    $clean = preg_replace('/[^0-9]/', '', (string) $state);
+
+                                    $formatted = $clean ? number_format((int) $clean, 0, ',', '.') : null;
+
+                                    $set('price', $formatted);
+
                                     $qty   = (float) ($get('qty') ?? 0);
                                     $price = (float) preg_replace('/[^0-9]/', '', (string) $state);
                                     $amount = $qty * $price;
@@ -175,16 +215,21 @@ class PoItemsForm
                                         $discountValue = (float) preg_replace('/[^0-9]/', '', (string) $discountInput);
                                     }
 
-                                    $set('amount', $amount);
+                                    $total = max($amount - $discountValue, 0);
+
+                                    $set('amount', number_format($amount, 0, ',', '.'));
                                     $set('subtotal', $amount);
-                                    $set('total', max($amount - $discountValue, 0));
+                                    $set('total', number_format($total, 0, ',', '.'));
+                                    self::updateGrandTotal($get, $set);
                                 })
                                 ->dehydrateStateUsing(fn($state) => preg_replace('/[^0-9]/', '', (string) $state)),
 
                             TextInput::make('amount')
                                 ->label('Jumlah')
-                                ->numeric()
-                                ->dehydrated(true),
+                                ->readOnly()
+                                ->dehydrateStateUsing(fn($state)
+                                => preg_replace('/[^0-9]/', '', (string) $state)
+                                ),
 
                             TextInput::make('subtotal')
                                 ->numeric()
@@ -197,28 +242,50 @@ class PoItemsForm
                                 ->reactive()
                                 ->debounce(500)
                                 ->afterStateUpdated(function ($state, $set, $get) {
-                                    $subtotal = (float) ($get('subtotal') ?? 0);
-                                    $discountValue = 0;
+                                $raw = (string) $state;
 
-                                    if (is_string($state) && str_contains($state, '%')) {
-                                        $percent = (float) str_replace('%', '', $state);
-                                        $discountValue = ($percent / 100) * $subtotal;
-                                    } else {
-                                        $discountValue = (float) preg_replace('/[^0-9]/', '', (string) $state);
-                                    }
+                                if (!str_contains($raw, '%')) {
+                                    $clean = preg_replace('/[^0-9]/', '', $raw);
+                                    $formatted = $clean ? number_format((int) $clean, 0, ',', '.') : null;
+                                    $set('discount', $formatted);
+                                }
 
-                                    $set('total', max($subtotal - $discountValue, 0));
-                                })
-                                ->dehydrateStateUsing(fn($state) => $state),
+                                $subtotal = (float) ($get('subtotal') ?? 0);
+
+                                if (str_contains($raw, '%')) {
+                                    $percent = (float) str_replace('%', '', $raw);
+                                    $discountValue = ($percent / 100) * $subtotal;
+                                } else {
+                                    $discountValue = (float) preg_replace('/[^0-9]/', '', $raw);
+                                }
+
+                                $total = max($subtotal - $discountValue, 0);
+
+                                $set('total', number_format($total, 0, ',', '.'));
+
+                                // 🔥 INI HARUS PALING AKHIR
+                                self::updateGrandTotal($get, $set);
+                            })
+                            ->dehydrateStateUsing(fn($state) => $state),
 
                             TextInput::make('total')
-                                ->numeric()
-                                ->dehydrated(true),
+                                ->label('Total')
+                                ->readOnly()
+                                ->dehydrateStateUsing(fn($state)
+                                => preg_replace('/[^0-9]/', '', (string) $state)
+                                ),
                         ])
                         ->columns(4)
                         ->columnSpanFull(),
                 ])
                 ->columnSpanFull(),
+                TextInput::make('grand_total')
+                ->label('Grand Total')
+                ->readOnly()
+                ->reactive()
+                ->dehydrateStateUsing(fn($state)
+                    => preg_replace('/[^0-9]/', '', (string) $state)
+                ),
         ]);
     }
 }
