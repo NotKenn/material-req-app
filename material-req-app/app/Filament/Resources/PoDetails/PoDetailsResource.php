@@ -21,13 +21,13 @@ use UnitEnum;
 class PoDetailsResource extends Resource
 {
     protected static ?string $model = PoDetails::class;
-    
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedNewspaper;
-    
+
     protected static ?string $recordTitleAttribute = 'Purchasing Orders';
-    
+
     protected static ?string $navigationLabel = 'Purchasing Orders';
-    
+
     protected static string|UnitEnum|null $navigationGroup = 'Purchasing';
 
     protected static ?int $navigationSort = 1; // biar urutannya jelas

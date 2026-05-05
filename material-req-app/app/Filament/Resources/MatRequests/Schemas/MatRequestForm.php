@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\MatRequests\Schemas;
 
+use App\Models\department;
 use App\Models\lastNumbers;
 use App\Models\mrDetails;
 use App\Models\matRequest;
@@ -162,8 +163,79 @@ class MatRequestForm
                     ->disabled(fn () => in_array(filament()->auth()->user()->role, ['User', 'MRSupervisor']))
                     ->directory('po-files')
                     ->default(null),
-                TextInput::make('departemen')
+                Select::make('department_id')
                     ->label('Departemen')
+                    ->relationship('department', 'departmentName')
+                    ->searchable()
+                    ->preload()
+
+                    ->suffixAction(
+                        Action::make('deleteDepartment')
+                            ->icon('heroicon-o-trash')
+                            ->color('danger')
+                            ->requiresConfirmation()
+                            ->action(function ($state, callable $set) {
+
+                                if (! $state) {
+                                    Notification::make()
+                                        ->title('Tidak ada data dipilih')
+                                        ->warning()
+                                        ->send();
+                                    return;
+                                }
+
+                                $model = department::find($state);
+
+                                if (! $model) {
+                                    Notification::make()
+                                        ->title('Data tidak ditemukan')
+                                        ->danger()
+                                        ->send();
+                                    return;
+                                }
+                                if ($model->mrRequests()->exists()) {
+                                        Notification::make()
+                                            ->title('Tidak bisa dihapus, masih dipakai')
+                                            ->danger()
+                                            ->send();
+                                        return;
+                                    }
+
+                                $model->delete();
+
+                                $set('department_id', null);
+
+                                Notification::make()
+                                    ->title('Department berhasil dihapus!')
+                                    ->success()
+                                    ->send();
+                            })
+                    )
+
+                    ->createOptionForm([
+                        TextInput::make('departmentName')
+                            ->label('Nama Department')
+                            ->required(),
+                    ])
+
+                    ->createOptionAction(fn (Action $action) =>
+                        $action
+                            ->modalHeading('Tambahkan Department')
+                            ->modalWidth('md')
+                    )
+
+                    ->editOptionForm([
+                        TextInput::make('departmentName')
+                            ->label('Nama Department')
+                            ->required(),
+                    ])
+
+                    ->editOptionAction(fn (Action $action) =>
+                        $action
+                            ->modalHeading('Edit Department')
+                            ->modalWidth('md')
+                    )
+
                     ->required(),
             ])
             ->columns(1) // Semua field full width

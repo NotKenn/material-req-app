@@ -24,7 +24,11 @@ class PoItemObserver
         $mrItem = matRequestItems::find($mrItemId);
         if (!$mrItem) return;
 
-        $totalUsed = PoItems::where('mr_item_id', $mrItemId)->sum('qty');
+        $totalUsed = PoItems::where('mr_item_id', $mrItemId)
+            ->whereHas('po', function ($q) {
+                $q->where('isActive', true);
+            })
+            ->sum('qty');
 
         $remaining = max(0, (float)$mrItem->Qty - (float)$totalUsed);
 

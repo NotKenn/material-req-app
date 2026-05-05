@@ -81,4 +81,14 @@ class matRequest extends Model
             'po_id'
         );
     }
+
+    public function company()
+    {
+        return $this->belongsTo(company::class);
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(department::class);
+    }
 }

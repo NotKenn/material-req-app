@@ -141,8 +141,11 @@ class PoExport
         $sheet->setCellValue('F8', $po->contactName);
         $sheet->setCellValue('F9', $po->phone);
 
-        $sheet->setCellValue('K6', $vendor->vendorName);
-        $sheet->setCellValue('K7', $po->date);
+        $sheet->setCellValue('K6', $po->po_number);
+        $sheet->setCellValue(
+            'K7',
+            \Carbon\Carbon::parse($po->date)->format('d-m-Y')
+        );
         $sheet->setCellValue('K8', $this->data['mr_codes']);
         $sheet->setCellValue('K9', $po->termOfPayment);
 
@@ -164,7 +167,7 @@ class PoExport
                 $this->duplicateRow($sheet, $startRow, $currentRow);
             }
             $sheet->setCellValue("B{$currentRow}", $no);
-            $sheet->setCellValue("C{$currentRow}", $item->note);
+            $sheet->setCellValue("C{$currentRow}", $item->itemName);
             $sheet->setCellValue("H{$currentRow}", $item->qty);
             $sheet->setCellValue("I{$currentRow}", $item->unit);
             $sheet->setCellValue("K{$currentRow}", $item->price);
@@ -226,24 +229,38 @@ class PoExport
         $sheet->setCellValue("L" . ($row + 1), $discount);
         $sheet->setCellValue("L" . ($row + 2), $grandTotal);
     }
-    private function injectSignature($sheet)
-    {
-        if (!$this->data['signature']) return;
+private function injectSignature($sheet)
+{
+    $row = $this->lastRow + 10;
 
-        $drawing = new Drawing();
-        $drawing->setPath($this->data['signature']);
-        $drawing->setHeight(60);
-        $drawing->setCoordinates('K' . ($this->lastRow + 10));
-        $drawing->setWorksheet($sheet);
+    // 🔥 CREATOR SIGN
+    if (!empty($this->data['signature']) && file_exists($this->data['signature'])) {
+        $drawing1 = new Drawing();
+        $drawing1->setPath($this->data['signature']);
+        $drawing1->setHeight(60);
+        $drawing1->setCoordinates("K{$row}");
 
-        if (!$this->data['supersign']) return;
+        // 🔥 center-ish positioning
+        $drawing1->setOffsetX(40); // adjust kalau kurang pas
+        $drawing1->setOffsetY(10);
 
-        $drawing = new Drawing();
-        $drawing->setPath($this->data['supersign']);
-        $drawing->setHeight(60);
-        $drawing->setCoordinates('L' . ($this->lastRow + 10));
-        $drawing->setWorksheet($sheet);
+        $drawing1->setWorksheet($sheet);
     }
+
+    // 🔥 SUPERVISOR SIGN
+    if (!empty($this->data['supersign']) && file_exists($this->data['supersign'])) {
+        $drawing2 = new Drawing();
+        $drawing2->setPath($this->data['supersign']);
+        $drawing2->setHeight(60);
+        $drawing2->setCoordinates("L{$row}");
+
+        // 🔥 center-ish positioning
+        $drawing2->setOffsetX(40);
+        $drawing2->setOffsetY(10);
+
+        $drawing2->setWorksheet($sheet);
+    }
+}
     private function injectSignName($sheet)
     {
         $row = $this->lastRow + 14;
@@ -275,5 +292,9 @@ class PoExport
         $sheet->setCellValue('K13', $penerima->lokasiPengantaran);
         $sheet->setCellValue('K14', $penerima->namaPenerima);
         $sheet->setCellValue('K15', $penerima->nomorKontak);
-    }
+
+        $sheet->getStyle('K13')
+        ->getAlignment()
+        ->setWrapText(true);
+        }
 }

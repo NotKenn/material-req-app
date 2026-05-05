@@ -11,6 +11,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\ViewAction;
 use Filament\Notifications\Notification;
 use Filament\Support\Enums\IconSize;
@@ -132,36 +133,46 @@ class PoDetailsTable
                         ->danger()
                         ->send(),
                     ])),
-                EditAction::make(),
-                Action::make('exportPdf')
-                ->label('PDF')
-                ->color(Color::Sky)
-                ->icon(Heroicon::OutlinedDocumentArrowDown)
-                ->visible(fn ($record) =>
-                $record->approvals()->latest('approved_at')->value('status') === 'Approved'
-                )
-                ->url(fn ($record) => route('po.preview.pdf', $record))
-                ->openUrlInNewTab(),
-                // ->action(function ($record) {
-                //     $pdf = Pdf::loadView('exports.record', [
-                //         'record' => $record,
-                //     ])
-                //     ->setPaper('a4');
-                //     // return response()->stream(fn () =>
-                //     //     print($pdf->output()), "record-{$record->id}.pdf"
-                // // );
-                //         return response()->stream(function () use ($pdf) {
-                //             echo $pdf->output();
-                //         }, 200, [
-                //             'Content-Type' => 'application/pdf',
-                //             'Content-Disposition' => 'inline; filename="MR-' . $record->id . '.pdf"',
-                //         ]);
-                // }),
-                ViewAction::make()
-                ->hidden(fn () => in_array(filament()->auth()->user()->role, ['Purchasing']))
-                ->disabled(fn () => in_array(filament()->auth()->user()->role, ['Purchasing'])),
-                //nnti masukin function untuk dompdf export sesuai template,
-                //nnti juga buat template di views/exports/ gitu
+                ActionGroup::make([
+                    EditAction::make(),
+                    Action::make('Revisi')
+                    ->label('Revisi')
+                    ->color(Color::Indigo)
+                    ->icon(Heroicon::OutlinedArrowTopRightOnSquare)
+                    ->requiresConfirmation()
+                    ->action(fn ($record) =>
+                        redirect()->route('po.revision.form', ['record' => $record->id])
+                    ),
+                    Action::make('exportPdf')
+                    ->label('PDF')
+                    ->color(Color::Sky)
+                    ->icon(Heroicon::OutlinedDocumentArrowDown)
+                    ->visible(fn ($record) =>
+                    $record->approvals()->latest('approved_at')->value('status') === 'Approved'
+                    )
+                    ->url(fn ($record) => route('po.preview.pdf', $record))
+                    ->openUrlInNewTab(),
+                    // ->action(function ($record) {
+                    //     $pdf = Pdf::loadView('exports.record', [
+                    //         'record' => $record,
+                    //     ])
+                    //     ->setPaper('a4');
+                    //     // return response()->stream(fn () =>
+                    //     //     print($pdf->output()), "record-{$record->id}.pdf"
+                    // // );
+                    //         return response()->stream(function () use ($pdf) {
+                    //             echo $pdf->output();
+                    //         }, 200, [
+                    //             'Content-Type' => 'application/pdf',
+                    //             'Content-Disposition' => 'inline; filename="MR-' . $record->id . '.pdf"',
+                    //         ]);
+                    // }),
+                    ViewAction::make()
+                    ->hidden(fn () => in_array(filament()->auth()->user()->role, ['Purchasing']))
+                    ->disabled(fn () => in_array(filament()->auth()->user()->role, ['Purchasing'])),
+                    //nnti masukin function untuk dompdf export sesuai template,
+                    //nnti juga buat template di views/exports/ gitu
+                ]),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

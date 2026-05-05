@@ -31,13 +31,13 @@
                 PURCHASE ORDER
             </div>
             @php
-                $revisi = $record?->isRevised;
+                $revisi = $record?->revision;
                 $getMRCode = DB::table('mr_table')
                     ->join('po_mr', 'mr_table.id', '=', 'po_mr.mr_id')
                     ->where('po_mr.po_id', $record?->id)
                     ->pluck('mr_table.kodeRequest');
             @endphp
-            @if ($revisi === 'Yes')
+            @if ($revisi > 0)
                 <div style="font-size:12px; margin-top:2px;">
                     Revisi
                 </div>
@@ -354,7 +354,7 @@
 {{-- Remarks & Totals --}}
 <table style="width:100%; border-collapse: collapse; margin-top:10px;" border="1">
     <tr>
-        <td style="width:62.5%; vertical-align:top; padding:5px;font-size:11px;">
+        <td style="width:62.5%; vertical-align:top; padding:5px;font-size:8px;">
             <b>REMARKS:</b><br>
             {!! nl2br(e($record->remarks)) !!}
 
@@ -452,5 +452,16 @@
                 <div style="background: rgba(255,255,255,0.4); padding: 5px;">a</div>
             </div>
         </div> --}}
+        <script type="text/php">
+        if (isset($pdf)) {
+            $pdf->page_text(
+                500, 800, // posisi (x, y)
+                "Page {PAGE_NUM} of {PAGE_COUNT}",
+                null,
+                10,
+                array(0,0,0)
+            );
+        }
+        </script>
 </body>
 </html>

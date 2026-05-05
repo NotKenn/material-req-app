@@ -314,3 +314,8 @@ Route::get('/po/{record}/pdf', function ($id) {
         ]
     );
 })->name('po.preview.pdf');
+
+use App\Filament\Resources\PoDetails\Pages\CreatePoRevision;
+
+Route::get('/po/{record}/revision', CreatePoRevision::class)
+    ->name('po.revision.form');

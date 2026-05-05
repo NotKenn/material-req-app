@@ -40,8 +40,8 @@ class PoItemsForm
                     ->relationship('matRequests', 'kodeRequest', function ($query) {
                         $query->whereHas('latestApproval', function ($q) {
                             $q->where('status', 'Approved');
-                        });
-                    // ->where('status', '!=', 'Closed');
+                        })
+                        ->where('isFulfilled', '=', '0');
                     })
                     ->searchable()
                     ->preload()

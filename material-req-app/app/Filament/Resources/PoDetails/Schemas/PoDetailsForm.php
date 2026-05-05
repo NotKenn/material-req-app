@@ -91,7 +91,7 @@ class PoDetailsForm
 * Pada saat pengantaran wajib mencantumkan kuantiti barang di Delivery Order yang sesuai dengan PO.
 * Yang berwenang menerima barang hanya nama yang tertera diatas kolom Deliver To.
 
-Sebelum pengantaran mohon hubungi contact person penerima terlebih dahulu
+* Sebelum pengantaran mohon hubungi contact person penerima terlebih dahulu
                         '),
                                 ])
                     ->columns(2)

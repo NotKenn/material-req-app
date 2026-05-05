@@ -53,7 +53,7 @@ class CustomLogin extends Login
     protected function getLoginFormComponent(): Component
     {
         return TextInput::make('login')
-            ->label(__('Username / Email'))
+            ->label(__('Username'))
             ->required()
             ->autocomplete()
             ->autofocus()
@@ -62,10 +62,10 @@ class CustomLogin extends Login
 
     protected function getCredentialsFromFormData(#[SensitiveParameter] array $data): array
     {
-        $login_type = filter_var($data['login'], FILTER_VALIDATE_EMAIL) ? 'email' : 'name';
+        // $login_type = filter_var($data['login'], FILTER_VALIDATE_EMAIL) ? 'email' : 'name';
 
         return [
-            $login_type => $data['login'],
+            'name'       => $data['login'],
             'password'  => $data['password'],
         ];
     }
