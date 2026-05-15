@@ -55,7 +55,10 @@ class matRequest extends Model
     {
         return $this->hasMany(matRequestItems::class, 'mr_id');
     }
-
+    public function poItems()
+    {
+        return $this->hasMany(\App\Models\PoItems::class, 'mr_item_id');
+    }
     public function mrDetails()
     {
         return $this->hasOne(mrDetails::class, 'mr_ids');

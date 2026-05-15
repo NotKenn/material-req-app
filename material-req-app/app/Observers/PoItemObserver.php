@@ -17,7 +17,7 @@ class PoItemObserver
         self::updateRemaining($item->mr_item_id);
     }
 
-    private static function updateRemaining($mrItemId)
+    public static function updateRemaining($mrItemId)
     {
         if (!$mrItemId) return;
 

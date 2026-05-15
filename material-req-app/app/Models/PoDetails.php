@@ -19,13 +19,20 @@ class PoDetails extends Model
         // 'mrsrNumber', //dari po_mr table, bagian mr_id where po_id = @po_id
         'termOfPayment',
         'vendorID',
-        'isRevised',
+        'revision',
+        'isActive',
         'gl_disc',
         'remarks'
     ];
 
     public $timestamps = false;
 
+    public function latestApproval()
+    {
+        return $this->morphOne(approvals::class, 'approvable','approvable_type','approvable_id')
+                    ->where('approvals.approvable_type', self::class)
+                    ->latestOfMany();
+    }
     public function vendor()
     {
         return $this->belongsTo(vendor::class, 'vendorID', 'id');

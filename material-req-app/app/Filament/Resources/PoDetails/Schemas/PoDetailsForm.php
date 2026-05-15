@@ -75,12 +75,6 @@ class PoDetailsForm
                             ->required(),
                         TextInput::make('gl_disc')
                             ->label('Global Discount (Kosongkan jika tidak ada)'),
-                        Select::make('isRevised')
-                        ->options([
-                            'Yes'   => 'Yes',
-                            'No'    => 'No'
-                        ])
-                        ->label('Revisi'),
                         Textarea::make('remarks')
                         ->label('Remarks')
                         ->rows(10)

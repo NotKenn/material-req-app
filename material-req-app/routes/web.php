@@ -241,7 +241,7 @@ Route::get('/mr/{record}/pdf', function ($id) {
 
 Route::get('/po/{record}/pdf', function ($id) {
     $record = PoDetails::findOrFail($id);
-    $poNumber = $record->po_number;
+    $poNumber = App\Services\PoNumberFormatter::format($record);
     $getRelatedMR = DB::table('po_mr')
             ->where('po_id', $record->id)
             ->pluck('mr_id');

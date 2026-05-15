@@ -4,11 +4,13 @@ namespace App\Filament\Resources\MatRequests\Tables;
 
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Builder;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Notifications\Notification;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\IconSize;
@@ -151,6 +153,82 @@ class MatRequestsTable
                         ->danger()
                         ->send(),
                     ])),
+                ActionGroup::make([
+                    Action::make('downloadPO')
+                    ->label('Download PO')
+                    ->icon(Heroicon::OutlinedDocumentArrowDown)
+                    ->color(Color::Sky)
+                    ->modalHeading('Download Related Purchase Orders')
+                    ->form([
+
+                        \Filament\Forms\Components\CheckboxList::make('selected_pos')
+                            ->label('Pilih PO')
+
+                            ->options(function ($record) {
+
+                                $poIds = \Illuminate\Support\Facades\DB::table('po_mr')
+                                    ->where('mr_id', $record->id)
+                                    ->whereNotNull('po_id')
+                                    ->pluck('po_id');
+
+                                return \App\Models\PoDetails::query()
+                                    ->whereIn('id', $poIds)
+                                    ->where('isActive', 1)
+                                    ->get()
+                                    ->mapWithKeys(function ($po) {
+
+                                        return [
+                                            $po->id => \App\Services\PoNumberFormatter::format($po)
+                                        ];
+                                    })
+                                    ->toArray();
+                            })
+
+                            ->columns(1)
+                            ->required(),
+                    ])
+                    ->action(function (array $data, $record) {
+
+                        $selectedPOs = \App\Models\PoDetails::whereIn('id', $data['selected_pos'])
+                            ->get();
+
+                        $zipFileName = 'PO-' . $record->kodeRequest . '.zip';
+
+                        $zipPath = storage_path("app/temp_{$record->id}.zip");
+
+                        $zip = new \ZipArchive();
+
+                        if ($zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) === true) {
+
+                            foreach ($selectedPOs as $po) {
+
+                                // generate pdf
+                                $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView(
+                                    'exports.record',
+                                    ['record' => $po]
+                                )
+                                ->setPaper('a4', 'portrait')
+                                ->output();
+
+                                // formatted filename
+                                $formattedPoNumber = \App\Services\PoNumberFormatter::format($po);
+
+                                $safeFileName = str_replace('/', '-', $formattedPoNumber);
+
+                                // add directly into zip
+                                $zip->addFromString(
+                                    "PO-{$safeFileName}.pdf",
+                                    $pdf
+                                );
+                            }
+
+                            $zip->close();
+                        }
+
+                        return response()
+                            ->download($zipPath, $zipFileName)
+                            ->deleteFileAfterSend(true);
+                    }),
                 EditAction::make(), //buat kalau supervisor, kasih approve button
                 Action::make('exportPdf')
                 ->openUrlInNewTab()
@@ -182,6 +260,8 @@ class MatRequestsTable
                 ViewAction::make()
                 // ->hidden(fn () => in_array(filament()->auth()->user()->role, ['Requester']))
                 // ->disabled(fn () => in_array(filament()->auth()->user()->role, ['Requester'])),
+                ]),
+
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

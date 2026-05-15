@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\PoDetails\Tables;
 
+use App\Services\PoNumberFormatter;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -29,9 +30,16 @@ class PoDetailsTable
                     ->searchable()
                     ->wrap(),
                 TextColumn::make('po_number')
+                    ->formatStateUsing(fn ($state, $record) =>
+                        PoNumberFormatter::format($record)
+                    )
                     ->label('Nomor PO')
                     ->searchable()
                     ->wrap(),
+                // TextColumn::make('po_number')
+                    // ->label('Nomor PO')
+                    // ->searchable()
+                    // ->wrap(),
                 // TextColumn::make('officeAddress')
                 //     ->label('Alamat')
                 //     ->searchable(),
@@ -147,11 +155,22 @@ class PoDetailsTable
                     ->label('PDF')
                     ->color(Color::Sky)
                     ->icon(Heroicon::OutlinedDocumentArrowDown)
-                    ->visible(fn ($record) =>
-                    $record->approvals()->latest('approved_at')->value('status') === 'Approved'
-                    )
+                    // ->visible(fn ($record) =>
+                    // $record->approvals()->latest('approved_at')->value('status') === 'Approved'
+                    // )
                     ->url(fn ($record) => route('po.preview.pdf', $record))
                     ->openUrlInNewTab(),
+
+                    // Action::make('exportExcel')
+                    // ->label('Excel')
+                    // ->color(Color::Sky)
+                    // ->icon(Heroicon::OutlinedDocumentArrowDown)
+                    // ->visible(fn ($record) =>
+                    // $record->approvals()->latest('approved_at')->value('status') === 'Approved'
+                    // )
+                    // ->url(fn ($record) => route('po.export.excel', $record))
+                    // ->openUrlInNewTab(),
+
                     // ->action(function ($record) {
                     //     $pdf = Pdf::loadView('exports.record', [
                     //         'record' => $record,

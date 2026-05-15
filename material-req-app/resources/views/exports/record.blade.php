@@ -36,6 +36,10 @@
                     ->join('po_mr', 'mr_table.id', '=', 'po_mr.mr_id')
                     ->where('po_mr.po_id', $record?->id)
                     ->pluck('mr_table.kodeRequest');
+
+                $alamatPT = $record->officeAddress ?? '';
+                $lenPT = strlen($alamatPT);
+                $fontPT = $lenPT > 50 ? '8px' : ($lenPT > 40 ? '9px' : '11px');
             @endphp
             @if ($revisi > 0)
                 <div style="font-size:12px; margin-top:2px;">
@@ -49,74 +53,89 @@
         </td>
     </tr>
     </table>
-    <table style="width:100%; border-collapse: collapse; border: none; padding:0; margin:0;">
-        <tr>
-            <td style="width:50%; border:none; padding:0; margin:0; vertical-align: top;">
-                <table style="width:100%; border-collapse: collapse; border:none; margin:0; padding:0;">
-                    <tr>
-                        <td style="border:none; padding:4px;">
-                            <span style="display:inline-block; width:120px;vertical-align:middle;">Company Name</span>
-                            <span style="display:inline-block;vertical-align:middle;">:</span>
-                            <span style="display:inline-block;vertical-align:middle;"> {{ $record->companyName }} </span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="border:none; padding:4px;">
-                            <span style="display:inline-block; width:120px;vertical-align:middle;">Office Address</span>
-                            <span style="display:inline-block;vertical-align:middle;">:</span>
-                            <span style="display:inline-block;vertical-align:middle;"> {{ $record->officeAddress }} </span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="border:none; padding:4px;">
-                            <span style="display:inline-block; width:120px;vertical-align:middle;">Contact Name</span>
-                            <span style="display:inline-block;vertical-align:middle;">:</span>
-                            <span style="display:inline-block;vertical-align:middle;"> {{ $record->contactName }} </span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="border:none; padding:4px;">
-                            <span style="display:inline-block; width:120px;vertical-align:middle;">Phone</span>
-                            <span style="display:inline-block;vertical-align:middle;">:</span>
-                            <span style="display:inline-block;vertical-align:middle;"> {{ $record->phone }} </span>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-            <td style="width:50%; border:none; padding:0; margin:0; vertical-align: top;">
-                <table style="width:100%; border-collapse: collapse; border:none; margin:0; padding:0;">
-                    <tr>
-                        <td style="border:none; padding:4px;">
-                            <span style="display:inline-block; width:120px;vertical-align:middle;">PO No.</span>
-                            <span style="display:inline-block;vertical-align:middle;">:</span>
-                            <span style="display:inline-block;vertical-align:middle;"> {{ $record->po_number }} </span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="border:none; padding:4px;">
-                            <span style="display:inline-block; width:120px;vertical-align:middle;">Date</span>
-                            <span style="display:inline-block;vertical-align:middle;">:</span>
-                            <span style="display:inline-block;vertical-align:middle;"> {{ $record->date }} </span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="border:none; padding:4px;">
-                            <span style="display:inline-block; width:120px;vertical-align:middle;">MR/SR No.</span>
-                            <span style="display:inline-block;vertical-align:middle;">:</span>
-                            <span style="display:inline-block;vertical-align:middle;"> {{ $getMRCode->join(', ') }} </span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="border:none; padding:4px;">
-                            <span style="display:inline-block; width:120px;vertical-align:middle;">Term of Payment</span>
-                            <span style="display:inline-block;vertical-align:middle;">:</span>
-                            <span style="display:inline-block;vertical-align:middle;"> {{ $record->termOfPayment }} </span>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
+<table style="width:100%; border-collapse:collapse; border:none; margin:0; padding:0;">
+    <tr>
+
+        <!-- LEFT SIDE -->
+        <td style="width:50%; vertical-align:top; border:none; padding:0; margin:0;">
+            <table style="width:100%; border-collapse:collapse; border:none;">
+
+                <tr>
+                    <td style="width:120px; padding:4px 6px; border:none;">Company Name</td>
+                    <td style="width:10px; text-align:center; border:none;">:</td>
+                    <td style="padding:4px 6px; border:none;">
+                        {{ $record->companyName }}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="padding:4px 6px; border:none;">Office Address</td>
+                    <td style="text-align:center; border:none;">:</td>
+                    <td style="padding:4px 6px; border:none; font-size: {{$fontPT}}">
+                        {{ $record->officeAddress }}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="padding:4px 6px; border:none;">Contact Name</td>
+                    <td style="text-align:center; border:none;">:</td>
+                    <td style="padding:4px 6px; border:none;">
+                        {{ $record->contactName }}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="padding:4px 6px; border:none;">Phone</td>
+                    <td style="text-align:center; border:none;">:</td>
+                    <td style="padding:4px 6px; border:none;">
+                        {{ $record->phone }}
+                    </td>
+                </tr>
+
+            </table>
+        </td>
+
+        <!-- RIGHT SIDE -->
+        <td style="width:50%; vertical-align:top; border:none; padding:0; margin:0;">
+            <table style="width:100%; border-collapse:collapse; border:none;">
+
+                <tr>
+                    <td style="width:120px; padding:4px 6px; border:none;">PO No.</td>
+                    <td style="width:10px; text-align:center; border:none;">:</td>
+                    <td style="padding:4px 6px; border:none;">
+                        {{ \App\Services\PoNumberFormatter::format($record) }}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="padding:4px 6px; border:none;">Date</td>
+                    <td style="text-align:center; border:none;">:</td>
+                    <td style="padding:4px 6px; border:none;">
+                        {{ $record->date }}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="padding:4px 6px; border:none;">MR/SR No.</td>
+                    <td style="text-align:center; border:none;">:</td>
+                    <td style="padding:4px 6px; border:none;">
+                        {{ $getMRCode->join(', ') }}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="padding:4px 6px; border:none;">Term of Payment</td>
+                    <td style="text-align:center; border:none;">:</td>
+                    <td style="padding:4px 6px; border:none;">
+                        {{ $record->termOfPayment }}
+                    </td>
+                </tr>
+
+            </table>
+        </td>
+
+    </tr>
+</table>
 <table style="width:100%; style="border-collapse: separate; border-spacing: 0; margin-top:10px; font-size:12px; border:1px solid #000;">
 
     @php

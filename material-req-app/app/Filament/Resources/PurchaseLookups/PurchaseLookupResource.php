@@ -77,6 +77,7 @@ class PurchaseLookupResource extends Resource
                 ])
                 ->leftJoin('po_details', 'po_items.po_id', '=', 'po_details.id')
                 ->leftJoin('vendor', 'po_details.vendorID', '=', 'vendor.id')
+                ->where('po_details.isActive', 1)
         )
         ->columns([
             TextColumn::make('itemName')->label('Item')->searchable(),

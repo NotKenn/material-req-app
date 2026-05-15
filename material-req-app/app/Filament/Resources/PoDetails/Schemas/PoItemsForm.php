@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\PoDetails\Schemas;
 
 use App\Models\itemmaster;
+use App\Models\matRequest;
 use App\Models\MatRequestItems;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
@@ -37,12 +38,28 @@ class PoItemsForm
                     Select::make('matRequests')
                     ->label('Pilih Material Request')
                     ->multiple()
+                    // ->options(function ($record) {
+
+                    //     $selected = $record
+                    //         ? $record->matRequests()->pluck('mr_table.id')->toArray()
+                    //         : [];
+
+                    //     return matRequest::query()
+                    //         ->where(function ($query) use ($selected) {
+                    //             $query->where('isFulfilled', 0)
+                    //                 ->orWhereIn('id', $selected);
+                    //         })
+                    //         ->pluck('kodeRequest', 'id');
+                    // })
                     ->relationship('matRequests', 'kodeRequest', function ($query) {
                         $query->whereHas('latestApproval', function ($q) {
                             $q->where('status', 'Approved');
                         })
                         ->where('isFulfilled', '=', '0');
                     })
+                    ->getOptionLabelUsing(fn ($value) =>
+                        matRequest::find($value)?->kodeRequest
+                    )
                     ->searchable()
                     ->preload()
                     ->reactive()
