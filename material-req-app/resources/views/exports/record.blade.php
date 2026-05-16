@@ -111,7 +111,7 @@
                     <td style="padding:4px 6px; border:none;">Date</td>
                     <td style="text-align:center; border:none;">:</td>
                     <td style="padding:4px 6px; border:none;">
-                        {{ $record->date }}
+                        {{ \Carbon\Carbon::parse($record->date)->format('d-m-Y') }}
                     </td>
                 </tr>
 

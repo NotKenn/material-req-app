@@ -24,4 +24,8 @@ class matRequestItems extends Model
     {
         return $this->belongsTo(itemmaster::class, 'itemName');
     }
+    public function poItems()
+    {
+        return $this->hasMany(\App\Models\PoItems::class, 'mr_item_id');
+    }
 }

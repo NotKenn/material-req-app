@@ -121,10 +121,10 @@ class TrackMRSTable
                 ->modalSubmitAction(false)
                 ->modalCancelActionLabel('Close')
                 ->modalContent(fn ($record) => view(
-                    'filament.track-mr.track-items',
+                    'filament.pages.track-items',
                     [
                         'record' => $record,
-                        'items' => $record->items,
+                        'items' => $record->mrItems,
                     ]
                 )),
             ])

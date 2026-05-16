@@ -49,4 +49,8 @@ class PoItems extends Model
     {
         return $this->belongsTo(PoDetails::class, 'po_id', 'id');
     }
+    public function poDetails()
+    {
+        return $this->belongsTo(\App\Models\PoDetails::class, 'po_id');
+    }
 }
